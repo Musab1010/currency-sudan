@@ -281,6 +281,13 @@ console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساع
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 عدد العملات المدعومة: ${Object.keys(data.official.currencies).length}`);
-  console.log(`📂 المصدر: ${data.official.source || 'data.json'}`);
+  
+  // ✅ التحقق من وجود البيانات قبل استخدامها
+  const currencyCount = data?.official?.currencies 
+    ? Object.keys(data.official.currencies).length 
+    : 0;
+  const source = data?.official?.source || 'data.json';
+  
+  console.log(`📊 عدد العملات المدعومة: ${currencyCount}`);
+  console.log(`📂 المصدر: ${source}`);
 });
