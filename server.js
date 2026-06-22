@@ -4,6 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
+const { exec } = require("child_process"); // ✅ أضف هذا السطر
 const { extractTextFromImage, extractCurrencyFromText } = require("./utils/ocr");
 
 const app = express();
@@ -60,8 +61,6 @@ function loadScraperData() {
   }
   return null;
 }
-
-
 
 function getMergedData() {
   let baseData = {
@@ -125,6 +124,23 @@ function saveData() {
 // 🔐 مفتاح الأدمن
 // ============================================================
 const ADMIN_KEY = "AdminSudan";
+
+// ============================================================
+// 🚀 تشغيل سكربت السحب عند بدء التشغيل
+// ============================================================
+
+// تشغيل السكربت فور بدء الخادم (مرة واحدة)
+exec("node scrape-alsoug.js", (error, stdout, stderr) => {
+  if (error) {
+    console.error("❌ فشل تشغيل سكربت السحب:", error.message);
+    return;
+  }
+  if (stdout) console.log(stdout);
+  if (stderr) console.error(stderr);
+  // تحديث البيانات في الذاكرة بعد السحب
+  data = getMergedData();
+  console.log("✅ تم تحديث البيانات بنجاح!");
+});
 
 // ============================================================
 // 📡 API: تحديث سعر عملة محددة
@@ -258,8 +274,6 @@ app.get("/admin", (req, res) => res.sendFile(path.join(__dirname, "admin", "inde
 // ============================================================
 // ⏰ تحديث تلقائي كل ساعة
 // ============================================================
-const { exec } = require("child_process");
-
 setInterval(() => {
   console.log("🔄 [تلقائي] جلب الأسعار من السوق السودان...");
   exec("node scrape-alsoug.js", (error, stdout, stderr) => {
