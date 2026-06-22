@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔐 لوحة تحكم الأدمن - أسعار العملات</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    .header { text-align: center; color: white; margin-bottom: 30px; }
+    .header h1 { font-size: 28px; }
+    .header p { opacity: 0.8; font-size: 14px; }
+    
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      padding-right: 12px;
+    }
+    .card-title.official { color: #11998e; border-right: 4px solid #11998e; }
+    .card-title.parallel { color: #f5576c; border-right: 4px solid #f5576c; }
+    
+    .login-box { text-align: center; }
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    
+    .market-tab {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #e0e0e0;
+    }
+    .tab-btn.active { background: #667eea; color: white; }
+    
+    .currency-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .currency-item {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 15px;
+      border: 1px solid #eee;
+    }
+    .currency-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .currency-flag { font-size: 28px; }
+    .currency-code { font-weight: bold; font-size: 16px; }
+    .currency-name { font-size: 11px; color: #666; }
+    .currency-rate {
+      font-size: 20px;
+      font-weight: bold;
+      color: #11998e;
+      margin: 8px 0;
+    }
+    .currency-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      direction: ltr;
+    }
+    .btn-update-item {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      background: #11998e;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .btn-update-item:hover { background: #0d7a6e; }
+    
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .btn-primary:hover { opacity: 0.9; }
+    
+    .upload-area {
+      border: 2px dashed #11998e;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 15px;
+      transition: all 0.3s;
+    }
+    .upload-area:hover { background: #f0f0f0; }
+    .preview-image { max-width: 100%; max-height: 200px; margin-top: 10px; border-radius: 10px; }
+    
+    .source-info {
+      background: #e8f5e9;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      color: #2e7d32;
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      z-index: 1000;
+      display: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>🔐 لوحة تحكم الأدمن</h1>
+    <p>تحديث أسعار العملات | رفع صور البنوك</p>
+  </div>
+
+  <div id="loginPanel" class="card">
+    <div class="login-box">
+      <h3>تسجيل الدخول</h3>
+      <input type="password" id="adminKeyLogin" placeholder="مفتاح الأدمن">
+      <button class="btn-primary" onclick="verifyLogin()">دخول</button>
+    </div>
+  </div>
+
+  <div id="adminPanel" style="display:none;">
+    
+    <div class="card">
+      <div class="source-info" id="sourceInfo">
+        📡 المصدر الحالي: جاري التحميل...
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title official">📸 رفع صورة من البنك</div>
+      <div class="upload-area" onclick="document.getElementById('bankImage').click()">
+        📷 اضغط لرفع صورة (شاشة أسعار البنك)
+        <input type="file" id="bankImage" accept="image/*" style="display:none" onchange="previewAndUpload()">
+      </div>
+      <div id="imagePreview"></div>
+      <div id="ocrResult" style="margin-top:15px; padding:10px; background:#f0f0f0; border-radius:10px; display:none;"></div>
+    </div>
+
+    <div class="market-tab">
+      <button class="tab-btn active" onclick="showMarket('official')">🏦 السعر الرسمي</button>
+      <button class="tab-btn" onclick="showMarket('parallel')">📈 السوق الموازي</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title official" id="marketTitle">🏦 السعر الرسمي</div>
+      <div id="currenciesGrid" class="currency-grid"></div>
+    </div>
+
+    <div class="card">
+      <button class="btn-primary" onclick="runScraper()" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+        🔄 سحب الأسعار من السوق السودان
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+  const ADMIN_SECRET_KEY = "AdminSudan";
+  let isLoggedIn = false;
+  let currentMarket = "official";
+  let currenciesData = {};
+
+  async function verifyLogin() {
+    const key = document.getElementById("adminKeyLogin").value;
+    if (key === ADMIN_SECRET_KEY) {
+      isLoggedIn = true;
+      document.getElementById("loginPanel").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+      await loadRates();
+      showToast("✅ تم تسجيل الدخول بنجاح");
+    } else {
+      showToast("❌ مفتاح الأدمن غير صحيح");
+    }
+  }
+
+  async function loadRates() {
+    try {
+      const res = await fetch("/api/rates");
+      const data = await res.json();
+      if (data.success) {
+        currenciesData = data;
+        
+        const source = data.official?.source || 'غير معروف';
+        const sourceText = source === 'alsoug.com' ? 'سوق السودان (alsoug.com)' : source;
+        document.getElementById('sourceInfo').innerHTML = `📡 المصدر الحالي: ${sourceText}`;
+        
+        displayCurrencies();
+      }
+    } catch (error) {
+      showToast("❌ فشل تحميل البيانات");
+    }
+  }
+
+  function showMarket(market) {
+    currentMarket = market;
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    event.target.classList.add("active");
+    
+    const title = document.getElementById("marketTitle");
+    if (market === "official") {
+      title.className = "card-title official";
+      title.innerHTML = "🏦 السعر الرسمي";
+    } else {
+      title.className = "card-title parallel";
+      title.innerHTML = "📈 السوق الموازي";
+    }
+    displayCurrencies();
+  }
+
+  function displayCurrencies() {
+    const marketData = currenciesData[currentMarket];
+    if (!marketData) return;
+
+    const currencies = marketData.currencies || {};
+    const grid = document.getElementById("currenciesGrid");
+    
+    if (Object.keys(currencies).length === 0) {
+      grid.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">لا توجد عملات</div>';
+      return;
+    }
+
+    grid.innerHTML = Object.entries(currencies).map(([code, curr]) => `
+      <div class="currency-item">
+        <div class="currency-header">
+          <span class="currency-flag">${curr.flag || '💱'}</span>
+          <span class="currency-code">${curr.code}</span>
+          <span class="currency-name">${curr.name}</span>
+        </div>
+        <div class="currency-rate" id="rate-${code}">${Math.round(curr.rate).toLocaleString()} SDG</div>
+        <input type="number" id="input-${code}" class="currency-input" placeholder="سعر جديد" step="0.01">
+        <button class="btn-update-item" onclick="updateCurrency('${code}')">تحديث</button>
+      </div>
+    `).join("");
+  }
+
+  async function updateCurrency(code) {
+    const newRate = document.getElementById(`input-${code}`).value;
+    if (!newRate) return showToast("⚠️ أدخل السعر الجديد");
+
+    try {
+      const res = await fetch("/admin/update/currency", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currencyCode: code,
+          rate: Number(newRate),
+          market: currentMarket,
+          adminKey: ADMIN_SECRET_KEY,
+          updatedBy: "admin",
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✅ تم تحديث ${code}`);
+        await loadRates();
+        document.getElementById(`input-${code}`).value = "";
+      } else {
+        showToast(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      showToast("❌ فشل الاتصال بالخادم");
+    }
+  }
+
+  async function previewAndUpload() {
+    const file = document.getElementById("bankImage").files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById("imagePreview").innerHTML = `<img src="${e.target.result}" class="preview-image">`;
+    };
+    reader.readAsDataURL(file);
+
+    const formData = new FormData();
+    formData.append("bankImage", file);
+    formData.append("adminKey", ADMIN_SECRET_KEY);
+    formData.append("market", currentMarket);
+
+    showToast("📤 جاري معالجة الصورة...");
+
+    try {
+      const res = await fetch("/admin/upload-bank-image", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showToast(`✅ ${data.message}`);
+        await loadRates();
+        
+        const resultDiv = document.getElementById("ocrResult");
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = `
+          <strong>📊 النص المستخرج:</strong><br>
+          <pre style="font-size:11px; overflow-x:auto; background:#f8f8f8; padding:10px; border-radius:6px;">${data.extractedText || 'لا يوجد نص'}</pre>
+          <strong>💰 الأسعار المستخرجة:</strong><br>
+          ${Object.entries(data.extractedRates || {}).map(([k, v]) => `${k}: ${v} SDG`).join("<br>")}
+        `;
+      } else {
+        showToast(`❌ ${data.error}`);
+      }
+    } catch (error) {
+      showToast("❌ فشل رفع الصورة");
+    }
+  }
+
+  async function runScraper() {
+    showToast("🔄 جاري سحب الأسعار...");
+    try {
+      const res = await fetch("/api/scrape", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        showToast("✅ تم سحب الأسعار بنجاح");
+        await loadRates();
+      } else {
+        showToast(`❌ ${data.error || 'فشل السحب'}`);
+      }
+    } catch (error) {
+      showToast("❌ فشل الاتصال بالخادم");
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.style.display = "block";
+    setTimeout(() => toast.style.display = "none", 3000);
+  }
+
+  loadRates();
+</script>
+
+</body>
+</html>
