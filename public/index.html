@@ -6,9 +6,10 @@
   <title>💱 أسعار العملات في السودان</title>
   
   <!-- ============================================================ -->
-  <!-- 📢 Google AdSense -->
+  <!-- 📢 Google AdSense - المعرف الجديد -->
   <!-- ============================================================ -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6876879746787479"
+  <meta name="google-adsense-account" content="ca-pub-9292164597330465">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9292164597330465"
      crossorigin="anonymous"></script>
   
   <style>
@@ -195,7 +196,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 1: إعلان Fluid (في الأعلى) -->
+  <!-- 📢 إعلان 1: إعلان Fluid (في الأعلى) - المعرف الجديد -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
@@ -203,7 +204,7 @@
          style="display:block"
          data-ad-format="fluid"
          data-ad-layout-key="-6t+ed+2i-1n-4w"
-         data-ad-client="ca-pub-6876879746787479"
+         data-ad-client="ca-pub-9292164597330465"
          data-ad-slot="5006593281"></ins>
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({});
@@ -226,13 +227,13 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 2: إعلان Auto (بين المحتوى والأزرار) -->
+  <!-- 📢 إعلان 2: إعلان Auto (بين المحتوى والأزرار) - المعرف الجديد -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
     <ins class="adsbygoogle"
          style="display:block"
-         data-ad-client="ca-pub-6876879746787479"
+         data-ad-client="ca-pub-9292164597330465"
          data-ad-slot="7240050556"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
@@ -248,13 +249,13 @@
   <div class="countdown" id="countdown">سيتم التحديث تلقائياً بعد 30 ثانية...</div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 3: إعلان آخر في الأسفل (اختياري) -->
+  <!-- 📢 إعلان 3: إعلان في الأسفل - المعرف الجديد -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
     <ins class="adsbygoogle"
          style="display:block"
-         data-ad-client="ca-pub-6876879746787479"
+         data-ad-client="ca-pub-9292164597330465"
          data-ad-slot="7240050556"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
@@ -321,7 +322,6 @@
     const currencies = marketData.currencies || {};
     const usdRate = currencies.USD?.rate || 0;
     
-    // حساب التغيير
     let change = 0;
     if (marketData.history && marketData.history.length > 0) {
       const lastHistory = marketData.history[0];
@@ -330,7 +330,6 @@
       }
     }
 
-    // عرض العملات الموجودة فقط (rate > 0)
     let currenciesHtml = '';
     for (const [code, curr] of Object.entries(currencies)) {
       if (code === 'USD') continue;
@@ -372,7 +371,6 @@
 
         <div class="update-info">
           📅 آخر تحديث: ${formattedDate}<br>
-       
         </div>
       </div>
     `;
@@ -412,7 +410,6 @@
     }
   }
 
-  // تحميل الأسعار عند فتح الصفحة
   loadRates();
 </script>
 
