@@ -12,7 +12,7 @@
       min-height: 100vh;
       padding: 20px;
     }
-    .container { max-width: 800px; margin: 0 auto; }
+    .container { max-width: 900px; margin: 0 auto; }
     .header { text-align: center; color: white; margin-bottom: 30px; }
     .header h1 { font-size: 28px; }
     .header p { opacity: 0.8; font-size: 14px; }
@@ -32,6 +32,7 @@
     }
     .card-title.official { color: #11998e; border-right: 4px solid #11998e; }
     .card-title.parallel { color: #f5576c; border-right: 4px solid #f5576c; }
+    .card-title.visitors { color: #667eea; border-right: 4px solid #667eea; }
     
     .login-box { text-align: center; }
     .login-box input {
@@ -143,6 +144,59 @@
       color: #2e7d32;
     }
     
+    /* ============================================================ */
+    /* 👥 إحصائيات الزوار الحقيقيين */
+    /* ============================================================ */
+    .visitor-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .visitor-stat {
+      background: #f8f9fa;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+    }
+    .visitor-stat .number {
+      font-size: 28px;
+      font-weight: 900;
+      color: #333;
+    }
+    .visitor-stat .label {
+      font-size: 11px;
+      color: #888;
+      margin-top: 5px;
+    }
+    .visitor-stat .number.green { color: #2e7d32; }
+    .visitor-stat .number.blue { color: #1565c0; }
+    .visitor-stat .number.purple { color: #6a1b9a; }
+    
+    .visitor-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .visitor-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+    .visitor-item:last-child { border-bottom: none; }
+    .visitor-item .ip { font-family: monospace; color: #333; }
+    .visitor-item .time { color: #888; font-size: 11px; }
+    .visitor-item .browser { color: #666; font-size: 12px; }
+    .visitor-item .badge-real {
+      background: #4caf50;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 9px;
+    }
+    
     .toast {
       position: fixed;
       bottom: 20px;
@@ -156,6 +210,16 @@
       display: none;
       font-size: 14px;
     }
+
+    @media (max-width: 600px) {
+      .visitor-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+      .visitor-item {
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -163,7 +227,7 @@
 <div class="container">
   <div class="header">
     <h1>🔐 لوحة تحكم الأدمن</h1>
-    <p>تحديث أسعار العملات | رفع صور البنوك</p>
+    <p>تحديث أسعار العملات | رفع صور البنوك | إحصائيات الزوار</p>
   </div>
 
   <div id="loginPanel" class="card">
@@ -176,12 +240,48 @@
 
   <div id="adminPanel" style="display:none;">
     
+    <!-- ============================================================ -->
+    <!-- 👥 إحصائيات الزوار الحقيقيين -->
+    <!-- ============================================================ -->
+    <div class="card">
+      <div class="card-title visitors">👥 الزوار الحقيقيون</div>
+      <div class="visitor-stats">
+        <div class="visitor-stat">
+          <div class="number green" id="real-total">0</div>
+          <div class="label">إجمالي الزوار</div>
+        </div>
+        <div class="visitor-stat">
+          <div class="number blue" id="real-today">0</div>
+          <div class="label">زوار اليوم</div>
+        </div>
+        <div class="visitor-stat">
+          <div class="number purple" id="real-online">0</div>
+          <div class="label">متصلون الآن</div>
+        </div>
+      </div>
+      <div style="margin-top:15px;">
+        <h4 style="font-size:14px;color:#333;margin-bottom:10px;">📋 أحدث الزيارات</h4>
+        <div class="visitor-list" id="real-visitors-list">
+          <div style="text-align:center;color:#888;padding:20px;">جاري تحميل الزيارات...</div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="refreshRealVisitors()" style="margin-top:15px;background:linear-gradient(135deg, #667eea, #764ba2);">
+        🔄 تحديث الزوار
+      </button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 📡 المصدر -->
+    <!-- ============================================================ -->
     <div class="card">
       <div class="source-info" id="sourceInfo">
         📡 المصدر الحالي: جاري التحميل...
       </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- 📸 رفع صورة -->
+    <!-- ============================================================ -->
     <div class="card">
       <div class="card-title official">📸 رفع صورة من البنك</div>
       <div class="upload-area" onclick="document.getElementById('bankImage').click()">
@@ -192,6 +292,9 @@
       <div id="ocrResult" style="margin-top:15px; padding:10px; background:#f0f0f0; border-radius:10px; display:none;"></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- 💱 العملات -->
+    <!-- ============================================================ -->
     <div class="market-tab">
       <button class="tab-btn active" onclick="showMarket('official')">🏦 السعر الرسمي</button>
       <button class="tab-btn" onclick="showMarket('parallel')">📈 السوق الموازي</button>
@@ -202,6 +305,9 @@
       <div id="currenciesGrid" class="currency-grid"></div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- 🔄 سحب الأسعار -->
+    <!-- ============================================================ -->
     <div class="card">
       <button class="btn-primary" onclick="runScraper()" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
         🔄 سحب الأسعار من السوق السودان
@@ -218,6 +324,9 @@
   let currentMarket = "official";
   let currenciesData = {};
 
+  // ============================================================
+  // 🔐 تسجيل الدخول
+  // ============================================================
   async function verifyLogin() {
     const key = document.getElementById("adminKeyLogin").value;
     if (key === ADMIN_SECRET_KEY) {
@@ -225,12 +334,17 @@
       document.getElementById("loginPanel").style.display = "none";
       document.getElementById("adminPanel").style.display = "block";
       await loadRates();
+      await loadRealVisitors();
+      startRealVisitorUpdates();
       showToast("✅ تم تسجيل الدخول بنجاح");
     } else {
       showToast("❌ مفتاح الأدمن غير صحيح");
     }
   }
 
+  // ============================================================
+  // 📊 تحميل أسعار العملات
+  // ============================================================
   async function loadRates() {
     try {
       const res = await fetch("/api/rates");
@@ -321,6 +435,9 @@
     }
   }
 
+  // ============================================================
+  // 📸 رفع صورة
+  // ============================================================
   async function previewAndUpload() {
     const file = document.getElementById("bankImage").files[0];
     if (!file) return;
@@ -365,6 +482,9 @@
     }
   }
 
+  // ============================================================
+  // 🔄 سحب الأسعار
+  // ============================================================
   async function runScraper() {
     showToast("🔄 جاري سحب الأسعار...");
     try {
@@ -381,6 +501,56 @@
     }
   }
 
+  // ============================================================
+  // 👥 دوال الزوار الحقيقيين
+  // ============================================================
+  async function loadRealVisitors() {
+    try {
+      console.log('🔄 جاري تحميل الزوار الحقيقيين...');
+      const res = await fetch("/api/real-visitors");
+      const data = await res.json();
+      
+      console.log('📊 بيانات الزوار:', data);
+      
+      if (data.success) {
+        document.getElementById('real-total').textContent = data.total.toLocaleString() || '0';
+        document.getElementById('real-today').textContent = data.today.toLocaleString() || '0';
+        document.getElementById('real-online').textContent = data.online || '0';
+        
+        const list = document.getElementById('real-visitors-list');
+        if (data.recent && data.recent.length > 0) {
+          list.innerHTML = data.recent.map(v => `
+            <div class="visitor-item">
+              <span class="ip">${v.ip || 'غير معروف'}</span>
+              <span class="browser">${v.browser || 'متصفح غير معروف'}</span>
+              <span class="time">${v.time ? new Date(v.time).toLocaleString('ar-EG') : ''}</span>
+              <span class="badge-real">✅ حقيقي</span>
+            </div>
+          `).join('');
+        } else {
+          list.innerHTML = '<div style="text-align:center;color:#888;padding:20px;">🚀 لا توجد زيارات مسجلة بعد<br><small>افتح الصفحة الرئيسية أولاً</small></div>';
+        }
+      }
+    } catch (error) {
+      console.error('❌ خطأ في تحميل الزوار:', error);
+      document.getElementById('real-visitors-list').innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ خطأ في الاتصال بالخادم</div>';
+    }
+  }
+
+  async function refreshRealVisitors() {
+    showToast("🔄 جاري تحديث الزوار...");
+    await loadRealVisitors();
+    showToast("✅ تم تحديث الزوار");
+  }
+
+  function startRealVisitorUpdates() {
+    loadRealVisitors();
+    setInterval(loadRealVisitors, 30000);
+  }
+
+  // ============================================================
+  // 🔔 Toast
+  // ============================================================
   function showToast(msg) {
     const toast = document.getElementById("toast");
     toast.textContent = msg;
@@ -388,6 +558,9 @@
     setTimeout(() => toast.style.display = "none", 3000);
   }
 
+  // ============================================================
+  // 🚀 تحميل البيانات عند فتح الصفحة
+  // ============================================================
   loadRates();
 </script>
 

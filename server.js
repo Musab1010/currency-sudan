@@ -1,4 +1,4 @@
-// server.js - مع دعم البيئات المختلفة
+// server.js - الكود الكامل النهائي مع الزوار الحقيقيين والوهميين
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -40,7 +40,6 @@ const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 // ============================================================
 const { checkAllBanks, getLastResults: getLastBankResults, BANKS } = require('./bank-checker');
 
-// API: الحصول على حالة البنوك
 app.get('/api/banks', (req, res) => {
   const data = getLastBankResults();
   if (data) {
@@ -54,7 +53,6 @@ app.get('/api/banks', (req, res) => {
   }
 });
 
-// API: تشغيل فحص جديد للبنوك
 app.post('/api/banks/check', async (req, res) => {
   try {
     const result = await checkAllBanks();
@@ -69,7 +67,6 @@ app.post('/api/banks/check', async (req, res) => {
 // ============================================================
 const { checkAllApps, getLastResults: getLastAppResults, APPS } = require('./app-checker');
 
-// API: الحصول على حالة التطبيقات
 app.get('/api/apps', (req, res) => {
   const data = getLastAppResults();
   if (data) {
@@ -83,7 +80,6 @@ app.get('/api/apps', (req, res) => {
   }
 });
 
-// API: تشغيل فحص جديد للتطبيقات
 app.post('/api/apps/check', async (req, res) => {
   try {
     const result = await checkAllApps();
@@ -98,8 +94,6 @@ app.post('/api/apps/check', async (req, res) => {
 // ============================================================
 
 const DATA_FILE = path.join(__dirname, "data.json");
-
-// مسار ملف البيانات من السكراب
 const SCRAPER_DATA_FILE = isProduction
   ? path.join('/tmp', 'rates.json')
   : path.join(__dirname, "data", "rates.json");
@@ -107,7 +101,6 @@ const SCRAPER_DATA_FILE = isProduction
 console.log(`📂 بيئة التشغيل: ${isProduction ? 'إنتاج (Production)' : 'تطوير (Development)'}`);
 console.log(`📂 مسار بيانات السكراب: ${SCRAPER_DATA_FILE}`);
 
-// دالة لقراءة البيانات من ملف السكراب
 function loadScraperData() {
   try {
     if (fs.existsSync(SCRAPER_DATA_FILE)) {
@@ -127,7 +120,6 @@ function getMergedData() {
     history: []
   };
 
-  // 1️⃣ تحميل البيانات الأساسية (احتياطي)
   try {
     if (fs.existsSync(DATA_FILE)) {
       const savedData = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
@@ -137,7 +129,6 @@ function getMergedData() {
     console.error("⚠️ خطأ في تحميل البيانات الأساسية:", error.message);
   }
 
-  // 2️⃣ تحميل بيانات السكراب - استبدال كامل
   const scraperData = loadScraperData();
   if (scraperData && scraperData.official && scraperData.official.currencies) {
     console.log("📊 تم تحميل بيانات السكراب من data/rates.json");
@@ -162,12 +153,8 @@ function getMergedData() {
   return baseData;
 }
 
-// ============================================================
-// 📊 البيانات في الذاكرة
-// ============================================================
 let data = getMergedData();
 
-// دالة لحفظ البيانات
 function saveData() {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
@@ -177,14 +164,8 @@ function saveData() {
   }
 }
 
-// ============================================================
-// 🔐 مفتاح الأدمن
-// ============================================================
 const ADMIN_KEY = "AdminSudan";
 
-// ============================================================
-// 🚀 تشغيل سكربت السحب عند بدء التشغيل
-// ============================================================
 exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   if (error) {
     console.error("❌ فشل تشغيل سكربت السحب:", error.message);
@@ -196,9 +177,6 @@ exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   console.log("✅ تم تحديث البيانات بنجاح!");
 });
 
-// ============================================================
-// 📡 API: تحديث سعر عملة محددة
-// ============================================================
 app.post("/admin/update/currency", (req, res) => {
   const { currencyCode, rate, market, adminKey, updatedBy } = req.body;
 
@@ -238,9 +216,6 @@ app.post("/admin/update/currency", (req, res) => {
   });
 });
 
-// ============================================================
-// 📸 رفع صورة من البنك واستخراج الأسعار
-// ============================================================
 app.post("/admin/upload-bank-image", upload.single("bankImage"), async (req, res) => {
   const { adminKey, market = "official" } = req.body;
 
@@ -295,9 +270,6 @@ app.post("/admin/upload-bank-image", upload.single("bankImage"), async (req, res
   }
 });
 
-// ============================================================
-// 📊 API: الحصول على جميع الأسعار
-// ============================================================
 app.get("/api/rates", (req, res) => {
   data = getMergedData();
   res.json({
@@ -307,9 +279,6 @@ app.get("/api/rates", (req, res) => {
   });
 });
 
-// ============================================================
-// 📜 API: الحصول على سجل التحديثات
-// ============================================================
 app.get("/api/history", (req, res) => {
   res.json({
     success: true,
@@ -324,7 +293,7 @@ app.get("/", (req, res) => res.sendFile(path.join(__dirname, "public", "index.ht
 app.get("/admin", (req, res) => res.sendFile(path.join(__dirname, "admin", "index.html")));
 
 // ============================================================
-// ⏰ تحديث تلقائي كل ساعة
+// ⏰ تحديث تلقائي كل ساعة (أسعار العملات)
 // ============================================================
 setInterval(() => {
   console.log("🔄 [تلقائي] جلب الأسعار من السوق السودان...");
@@ -340,6 +309,192 @@ setInterval(() => {
 }, 60 * 60 * 1000);
 
 console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساعة");
+
+// ============================================================
+// 👥 نظام الزوار الوهميين
+// ============================================================
+
+const VISITORS_FILE = path.join(__dirname, "data", "visitors.json");
+
+function getVisitors() {
+  try {
+    if (fs.existsSync(VISITORS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(VISITORS_FILE, 'utf8'));
+      
+      const now = new Date();
+      const resetDate = new Date(data.dailyReset);
+      if (resetDate.getDate() !== now.getDate() || 
+          resetDate.getMonth() !== now.getMonth() || 
+          resetDate.getFullYear() !== now.getFullYear()) {
+        data.today = 0;
+        data.dailyReset = now.toISOString();
+        saveVisitors(data);
+      }
+      
+      return data;
+    }
+  } catch (error) {
+    console.error('خطأ في قراءة بيانات الزوار:', error.message);
+  }
+  
+  const defaultData = {
+    total: 0,
+    today: 0,
+    lastUpdate: new Date().toISOString(),
+    dailyReset: new Date().toISOString()
+  };
+  saveVisitors(defaultData);
+  return defaultData;
+}
+
+function saveVisitors(data) {
+  try {
+    const dataDir = path.join(__dirname, 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+    fs.writeFileSync(VISITORS_FILE, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('خطأ في حفظ بيانات الزوار:', error.message);
+  }
+}
+
+function updateVisitors() {
+  const data = getVisitors();
+  const now = new Date();
+  
+  const resetDate = new Date(data.dailyReset);
+  if (resetDate.getDate() !== now.getDate() || 
+      resetDate.getMonth() !== now.getMonth() || 
+      resetDate.getFullYear() !== now.getFullYear()) {
+    data.today = 0;
+    data.dailyReset = now.toISOString();
+  }
+  
+  const increase = Math.floor(Math.random() * 10) + 5;
+  data.total += increase;
+  data.today += increase;
+  data.lastUpdate = now.toISOString();
+  
+  saveVisitors(data);
+  console.log(`👥 تم تحديث الزوار: +${increase} (الإجمالي: ${data.total}, اليوم: ${data.today})`);
+}
+
+setInterval(updateVisitors, 60 * 60 * 1000);
+setTimeout(updateVisitors, 5000);
+
+app.get('/api/visitors', (req, res) => {
+  const data = getVisitors();
+  res.json({
+    success: true,
+    total: data.total,
+    today: data.today,
+    lastUpdate: data.lastUpdate
+  });
+});
+
+console.log('👥 نظام الزوار الوهميين يعمل (تحديث كل ساعة)');
+
+// ============================================================
+// 👥 الزوار الحقيقيين
+// ============================================================
+
+const REAL_VISITORS_FILE = path.join(__dirname, "data", "real-visitors.json");
+
+// دالة لتسجيل زائر حقيقي
+function logRealVisitor(req) {
+  try {
+    let data = { total: 0, today: 0, online: 0, recent: [], lastReset: new Date().toISOString() };
+    
+    if (fs.existsSync(REAL_VISITORS_FILE)) {
+      data = JSON.parse(fs.readFileSync(REAL_VISITORS_FILE, 'utf8'));
+    }
+    
+    // التحقق من إعادة التعيين اليومي
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+    if (data.lastReset !== today) {
+      data.today = 0;
+      data.lastReset = today;
+    }
+    
+    // زيادة العداد
+    data.total += 1;
+    data.today += 1;
+    data.online = Math.min(data.online + 1, 50); // حد أقصى 50 متصل
+    
+    // إضافة الزيارة إلى السجل
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'غير معروف';
+    const userAgent = req.headers['user-agent'] || 'غير معروف';
+    const browser = userAgent.split(' ').slice(0, 2).join(' ') || 'متصفح غير معروف';
+    
+    data.recent.unshift({
+      ip: ip,
+      browser: browser,
+      time: new Date().toISOString()
+    });
+    
+    // الاحتفاظ بآخر 50 زيارة فقط
+    if (data.recent.length > 50) {
+      data.recent = data.recent.slice(0, 50);
+    }
+    
+    fs.writeFileSync(REAL_VISITORS_FILE, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('خطأ في تسجيل الزائر:', error.message);
+  }
+}
+
+// ✅ تسجيل الزوار الحقيقيين (Middleware)
+app.use((req, res, next) => {
+  // تجاهل طلبات API والملفات الثابتة
+  if (!req.path.startsWith('/api/') && !req.path.startsWith('/admin') && 
+      !req.path.includes('.') && req.path !== '/') {
+    logRealVisitor(req);
+  }
+  next();
+});
+
+// ✅ تقليل عدد المتصلين بعد فترة (محاكاة خروج الزوار)
+setInterval(() => {
+  try {
+    if (fs.existsSync(REAL_VISITORS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(REAL_VISITORS_FILE, 'utf8'));
+      if (data.online > 0) {
+        data.online = Math.max(0, data.online - Math.floor(Math.random() * 3));
+        fs.writeFileSync(REAL_VISITORS_FILE, JSON.stringify(data, null, 2));
+      }
+    }
+  } catch (error) {}
+}, 60000); // كل دقيقة
+
+// API: الحصول على إحصائيات الزوار الحقيقيين
+app.get('/api/real-visitors', (req, res) => {
+  try {
+    if (fs.existsSync(REAL_VISITORS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(REAL_VISITORS_FILE, 'utf8'));
+      res.json({
+        success: true,
+        total: data.total || 0,
+        today: data.today || 0,
+        online: data.online || 0,
+        recent: data.recent || []
+      });
+    } else {
+      res.json({
+        success: true,
+        total: 0,
+        today: 0,
+        online: 0,
+        recent: []
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+console.log('👥 نظام الزوار الحقيقيين يعمل');
 
 // ============================================================
 // 🚀 تشغيل الخادم

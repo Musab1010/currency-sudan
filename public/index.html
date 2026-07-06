@@ -8,7 +8,8 @@
   <!-- ============================================================ -->
   <!-- 📢 Google AdSense -->
   <!-- ============================================================ -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6876879746787479"
+  <meta name="google-adsense-account" content="ca-pub-9292164597330465">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9292164597330465"
      crossorigin="anonymous"></script>
   
   <style>
@@ -117,6 +118,7 @@
       text-align: center;
       transition: all 0.3s;
       border: 1px solid transparent;
+      position: relative;
     }
     .currency-item:hover {
       border-color: #667eea;
@@ -126,6 +128,24 @@
     .currency-icon { font-size: 24px; margin-bottom: 5px; display: block; }
     .currency-name { font-size: 11px; color: #666; margin-bottom: 5px; }
     .currency-value { font-size: 16px; font-weight: bold; color: #333; }
+    
+    /* ============================================================ */
+    /* 📈 مثلثات التغير */
+    /* ============================================================ */
+    .change-triangle {
+      display: inline-block;
+      font-size: 14px;
+      margin-right: 4px;
+    }
+    .change-triangle.up {
+      color: #4caf50;
+    }
+    .change-triangle.down {
+      color: #f44336;
+    }
+    .change-triangle.neutral {
+      color: #888;
+    }
     
     .update-info {
       text-align: center;
@@ -165,69 +185,90 @@
     }
 
     /* ============================================================ */
-    /* 🏦 تنسيق البنوك والتطبيقات */
+    /* 👥 عداد الزوار */
     /* ============================================================ */
-    .bank-stats {
+    .visitors-container {
       display: flex;
-      gap: 15px;
+      align-items: center;
       justify-content: center;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
+      gap: 20px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 12px 20px;
+      margin: 15px 0 20px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
     }
-    .bank-stat {
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-    }
-    .bank-stat.up { background: #e8f5e9; color: #2e7d32; }
-    .bank-stat.down { background: #ffebee; color: #c62828; }
-    .bank-stat.total { background: #e3f2fd; color: #1565c0; }
-    
-    .bank-item {
+
+    .visitor-card {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      background: #f8f9fa;
-      border-radius: 10px;
-      margin-bottom: 8px;
-      border-right: 4px solid #4caf50;
-      transition: all 0.3s;
+      gap: 12px;
     }
-    .bank-item.down { border-right-color: #f44336; }
-    .bank-item:hover { background: #f0f0f0; }
-    
-    .bank-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+
+    .visitor-icon {
+      font-size: 28px;
+      animation: pulse-icon 2s ease-in-out infinite;
     }
-    .bank-icon { font-size: 20px; }
-    .bank-name { font-weight: bold; font-size: 14px; }
-    .bank-url { font-size: 11px; color: #888; }
-    
-    .bank-status {
-      text-align: left;
+
+    .visitor-info {
+      text-align: right;
     }
-    .bank-status .status-badge {
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 12px;
-      font-weight: bold;
-    }
-    .bank-status .status-badge.up { background: #e8f5e9; color: #2e7d32; }
-    .bank-status .status-badge.down { background: #ffebee; color: #c62828; }
-    .bank-status .response-time {
+
+    .visitor-label {
       font-size: 10px;
-      color: #888;
-      margin-top: 2px;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
     }
-    
-    .bank-loading {
-      text-align: center;
-      padding: 20px;
-      color: #888;
+
+    .visitor-number {
+      font-size: 24px;
+      font-weight: 900;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.3s ease;
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* تأثير التحديث */
+    .visitor-number.updating {
+      animation: numberPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .visitor-divider {
+      width: 1px;
+      height: 35px;
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ============================================================ */
+    /* 🎬 حركات */
+    /* ============================================================ */
+    @keyframes pulse-icon {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes numberPop {
+      0% { transform: scale(1); opacity: 1; }
+      30% { transform: scale(1.3); color: #00e676; }
+      60% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .visitor-number.updating {
+      background: linear-gradient(90deg, transparent, rgba(0,230,118,0.2), transparent);
+      background-size: 200% 100%;
+      animation: shimmer 0.8s ease, numberPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* ============================================================ */
@@ -256,8 +297,24 @@
       .usd-value { font-size: 40px; }
       .currency-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .ad-container { min-height: 70px; padding: 4px; }
-      .bank-item { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .bank-status { width: 100%; display: flex; justify-content: space-between; }
+      .visitors-container {
+        gap: 10px;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+      }
+      .visitor-number {
+        font-size: 18px;
+        min-width: 40px;
+      }
+      .visitor-icon {
+        font-size: 20px;
+      }
+      .visitor-label {
+        font-size: 9px;
+      }
+      .visitor-divider {
+        height: 25px;
+      }
     }
   </style>
 </head>
@@ -271,6 +328,28 @@
   <div class="header">
     <h1>💱 أسعار العملات في السودان</h1>
     <p>تحديث فوري لأسعار الصرف</p>
+    
+    <!-- ============================================================ -->
+    <!-- 👥 عداد الزوار -->
+    <!-- ============================================================ -->
+    <div class="visitors-container">
+      <div class="visitor-card">
+        <div class="visitor-icon">👥</div>
+        <div class="visitor-info">
+          <div class="visitor-label">إجمالي الزوار</div>
+          <div class="visitor-number" id="total-visitors">0</div>
+        </div>
+      </div>
+      <div class="visitor-divider"></div>
+      <div class="visitor-card">
+        <div class="visitor-icon">📅</div>
+        <div class="visitor-info">
+          <div class="visitor-label">زوار اليوم</div>
+          <div class="visitor-number" id="today-visitors">0</div>
+        </div>
+      </div>
+    </div>
+    
     <div class="badge-source" id="sourceBadge">📡 المصدر: جاري التحميل...</div>
   </div>
 
@@ -283,7 +362,7 @@
          style="display:block"
          data-ad-format="fluid"
          data-ad-layout-key="-6t+ed+2i-1n-4w"
-         data-ad-client="ca-pub-6876879746787479"
+         data-ad-client="ca-pub-9292164597330465"
          data-ad-slot="5006593281"></ins>
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({});
@@ -306,13 +385,13 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 2: إعلان Auto (بين العملات والبنوك) -->
+  <!-- 📢 إعلان 2: إعلان Auto (بين العملات والتطبيقات) -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
     <ins class="adsbygoogle"
          style="display:block"
-         data-ad-client="ca-pub-6876879746787479"
+         data-ad-client="ca-pub-9292164597330465"
          data-ad-slot="7240050556"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
@@ -322,26 +401,9 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 🏦 حالة البنوك السودانية (مواقع) -->
+  <!-- ❌ تم تعليق قسم تطبيقات البنوك السودانية -->
   <!-- ============================================================ -->
-  <div class="card">
-    <div class="card-header">
-      <h2>🏦 حالة البنوك السودانية</h2>
-      <span class="badge" id="banks-update-time">جاري التحميل...</span>
-    </div>
-    
-    <div id="banks-container">
-      <div class="bank-loading">⏳ جاري تحميل حالة البنوك...</div>
-    </div>
-    
-    <button class="refresh-btn" onclick="checkBanks()" style="margin-top:15px;background:linear-gradient(135deg, #667eea, #764ba2);">
-      🔄 فحص البنوك الآن
-    </button>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 📱 تطبيقات البنوك السودانية -->
-  <!-- ============================================================ -->
+  <!-- 
   <div class="card">
     <div class="card-header">
       <h2>📱 تطبيقات البنوك السودانية</h2>
@@ -362,6 +424,7 @@
       ℹ️ يتم فحص توفر التطبيقات في متجر Google Play
     </div>
   </div>
+  -->
 
   <!-- ============================================================ -->
   <!-- REFRESH BUTTON (أسعار العملات) -->
@@ -376,7 +439,7 @@
     <div class="ad-label">- إعلان -</div>
     <ins class="adsbygoogle"
          style="display:block"
-         data-ad-client="ca-pub-6876879746787479"
+         data-ad-client="ca-pub-9292164597330465"
          data-ad-slot="7240050556"
          data-ad-format="auto"
          data-full-width-responsive="true"></ins>
@@ -399,6 +462,22 @@
   let ratesData = null;
   let countdownInterval = null;
   let countdownValue = 30;
+  
+  // ✅ تخزين حالة المثلثات في localStorage
+  const TRIANGLE_STORAGE_KEY = 'currency_triangles';
+
+  // ✅ دالة لحفظ حالة المثلثات
+  function saveTriangleState(code, triangleClass) {
+    const saved = JSON.parse(localStorage.getItem(TRIANGLE_STORAGE_KEY) || '{}');
+    saved[code] = triangleClass;
+    localStorage.setItem(TRIANGLE_STORAGE_KEY, JSON.stringify(saved));
+  }
+
+  // ✅ دالة لاسترجاع حالة المثلثات
+  function getTriangleState(code) {
+    const saved = JSON.parse(localStorage.getItem(TRIANGLE_STORAGE_KEY) || '{}');
+    return saved[code] || 'neutral';
+  }
 
   async function loadRates() {
     const btn = document.getElementById('refreshBtn');
@@ -412,9 +491,7 @@
       if (data.success) {
         ratesData = data;
         
-        const source = data.official?.source || 'غير معروف';
-        const sourceText = source === 'alsoug.com' ? 'سوق السودان' : source;
-        document.getElementById('sourceBadge').textContent = `📡 المصدر: ${sourceText}`;
+        document.getElementById('sourceBadge').textContent = `📡 تحديث فوري`;
         
         displayRates();
         resetCountdown();
@@ -460,11 +537,45 @@
       if (code === 'USD') continue;
       if (curr.rate === 0) continue;
       
+      const currentRate = curr.rate;
+      
+      // ✅ حساب التغير بناءً على السعر السابق
+      const prevRate = previousRates[code] || currentRate;
+      let changePercent = 0;
+      if (prevRate > 0) {
+        changePercent = ((currentRate - prevRate) / prevRate) * 100;
+      }
+      
+      // ✅ تحديث السعر السابق
+      previousRates[code] = currentRate;
+      
+      // ✅ تحديد المثلث المناسب
+      let triangle = '';
+      let triangleClass = 'neutral';
+      
+      if (changePercent > 0) {
+        triangle = '🔺';
+        triangleClass = 'up';
+        saveTriangleState(code, 'up'); // ✅ حفظ الحالة
+      } else if (changePercent < 0) {
+        triangle = '🔻';
+        triangleClass = 'down';
+        saveTriangleState(code, 'down'); // ✅ حفظ الحالة
+      } else {
+        // ✅ إذا لم يتغير السعر، نستخدم آخر حالة محفوظة
+        const savedClass = getTriangleState(code);
+        triangleClass = savedClass;
+        triangle = savedClass === 'up' ? '🔺' : (savedClass === 'down' ? '🔻' : '➖');
+      }
+      
       currenciesHtml += `
         <div class="currency-item">
           <span class="currency-icon">${curr.flag || '💱'}</span>
           <div class="currency-name">${curr.name || code}</div>
-          <div class="currency-value">${Math.round(curr.rate).toLocaleString()} SDG</div>
+          <div class="currency-value">
+            ${Math.round(curr.rate).toLocaleString()} SDG
+            <span class="change-triangle ${triangleClass}">${triangle}</span>
+          </div>
         </div>
       `;
     }
@@ -496,8 +607,7 @@
 
         <div class="update-info">
           📅 آخر تحديث: ${formattedDate}<br>
-          👤 بواسطة: ${marketData.updatedBy || 'system'}<br>
-          📡 المصدر: ${marketData.source || 'غير معروف'}
+          👤 بواسطة: ${marketData.updatedBy || 'system'}
         </div>
       </div>
     `;
@@ -538,95 +648,9 @@
   }
 
   // ============================================================
-  // 🏦 دوال فحص البنوك (مواقع)
+  // ❌ تم تعليق دوال فحص تطبيقات البنوك
   // ============================================================
-
-  async function loadBanksStatus() {
-    const container = document.getElementById('banks-container');
-    container.innerHTML = '<div class="bank-loading">⏳ جاري تحميل حالة البنوك...</div>';
-    
-    try {
-      const response = await fetch('/api/banks');
-      const data = await response.json();
-      
-      if (data.success) {
-        displayBanks(data);
-      } else {
-        container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ فشل تحميل حالة البنوك</div>';
-      }
-    } catch (error) {
-      console.error('خطأ في تحميل حالة البنوك:', error);
-      container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ خطأ في الاتصال بالخادم</div>';
-    }
-  }
-
-  function displayBanks(data) {
-    const container = document.getElementById('banks-container');
-    const updateTime = document.getElementById('banks-update-time');
-    
-    if (updateTime) {
-      const date = new Date(data.lastUpdated);
-      updateTime.textContent = `🕐 ${date.toLocaleString('ar-EG')}`;
-    }
-    
-    const statsHtml = `
-      <div class="bank-stats">
-        <span class="bank-stat up">✅ يعمل: ${data.up}</span>
-        <span class="bank-stat down">❌ معطل: ${data.down}</span>
-        <span class="bank-stat total">📊 ${data.upPercentage}% متاح</span>
-      </div>
-    `;
-    
-    let banksHtml = '';
-    for (const bank of data.banks) {
-      const isUp = bank.status === 'up';
-      banksHtml += `
-        <div class="bank-item ${!isUp ? 'down' : ''}">
-          <div class="bank-info">
-            <span class="bank-icon">${bank.icon || '🏛️'}</span>
-            <div>
-              <div class="bank-name">${bank.name}</div>
-              <div class="bank-url">${bank.url}</div>
-            </div>
-          </div>
-          <div class="bank-status">
-            <span class="status-badge ${isUp ? 'up' : 'down'}">${isUp ? '✅ يعمل' : '❌ معطل'}</span>
-            <div class="response-time">${bank.responseTime || 0}ms</div>
-          </div>
-        </div>
-      `;
-    }
-    
-    container.innerHTML = statsHtml + banksHtml;
-  }
-
-  async function checkBanks() {
-    const btn = event.target;
-    btn.disabled = true;
-    btn.textContent = '⏳ جاري الفحص...';
-    
-    try {
-      const response = await fetch('/api/banks/check', { method: 'POST' });
-      const data = await response.json();
-      
-      if (data.success) {
-        displayBanks(data);
-        showToast('✅ تم فحص البنوك بنجاح');
-      } else {
-        showToast('❌ فشل فحص البنوك');
-      }
-    } catch (error) {
-      showToast('❌ خطأ في الاتصال');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '🔄 فحص البنوك الآن';
-    }
-  }
-
-  // ============================================================
-  // 📱 دوال فحص تطبيقات البنوك
-  // ============================================================
-
+  /*
   async function loadAppsStatus() {
     const container = document.getElementById('apps-container');
     container.innerHTML = '<div class="bank-loading">⏳ جاري تحميل التطبيقات...</div>';
@@ -713,6 +737,86 @@
       btn.textContent = '🔄 فحص التطبيقات الآن';
     }
   }
+  */
+
+  // ============================================================
+  // 👥 دوال عداد الزوار
+  // ============================================================
+
+  let totalVisitors = 0;
+  let todayVisitors = 0;
+  let isUpdating = false;
+
+  async function loadVisitors() {
+    try {
+      const response = await fetch('/api/visitors');
+      const data = await response.json();
+      
+      if (data.success) {
+        // ✅ تحديث الأعداد مع تأثير الحركة
+        updateVisitorDisplay('total-visitors', data.total, totalVisitors);
+        updateVisitorDisplay('today-visitors', data.today, todayVisitors);
+        
+        totalVisitors = data.total;
+        todayVisitors = data.today;
+      }
+    } catch (error) {
+      console.error('خطأ في تحميل الزوار:', error);
+    }
+  }
+
+  function updateVisitorDisplay(elementId, newValue, oldValue) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    
+    // ✅ فقط أضف التأثير إذا تغير الرقم
+    if (newValue !== oldValue) {
+      element.classList.remove('updating');
+      // إعادة تشغيل الأنيميشن
+      void element.offsetWidth; // Force reflow
+      element.classList.add('updating');
+      
+      // ✅ تحديث الرقم مع تأثير تدريجي
+      animateNumber(element, oldValue, newValue);
+    } else {
+      element.textContent = newValue.toLocaleString();
+    }
+  }
+
+  function animateNumber(element, start, end) {
+    const duration = 400; // مدة الحركة بالمللي ثانية
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // ✅ دالة تسهيل (Easing) لجعل الحركة طبيعية
+      const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(start + (end - start) * easeOutCubic);
+      
+      element.textContent = current.toLocaleString();
+      
+      if (progress < 1) {
+        requestAnimationFrame(update);
+      } else {
+        element.textContent = end.toLocaleString();
+      }
+    }
+    
+    requestAnimationFrame(update);
+  }
+
+  // ✅ تحديث الزوار كل 30 ثانية (مع تأثير الحركة)
+  function startVisitorUpdates() {
+    // تحميل فوري
+    loadVisitors();
+    
+    // تحديث دوري
+    setInterval(() => {
+      loadVisitors();
+    }, 30000); // كل 30 ثانية
+  }
 
   // ============================================================
   // 🔔 Toast Notification
@@ -751,13 +855,16 @@
   // 🚀 تحميل البيانات عند فتح الصفحة
   // ============================================================
   
+  // ✅ متغير لتخزين الأسعار السابقة
+  let previousRates = {};
+
   loadRates();
-  loadBanksStatus();
-  loadAppsStatus();
+  // loadAppsStatus(); // ❌ تم تعليق تحميل التطبيقات
+  startVisitorUpdates(); // ✅ بدء عداد الزوار
   
   // تحديث دوري
-  setInterval(loadBanksStatus, 5 * 60 * 1000);  // كل 5 دقائق
-  setInterval(loadAppsStatus, 10 * 60 * 1000);  // كل 10 دقائق
+  setInterval(loadRates, 30000);
+  // setInterval(loadAppsStatus, 10 * 60 * 1000); // ❌ تم تعليق تحديث التطبيقات
 </script>
 
 </body>
