@@ -63,6 +63,23 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card-header h2 { font-size: 18px; color: #333; }
+    .card-header .badge {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    
     .usd-card {
       background: linear-gradient(135deg, #11998e, #38ef7d);
       color: white;
@@ -148,6 +165,72 @@
     }
 
     /* ============================================================ */
+    /* 🏦 تنسيق البنوك والتطبيقات */
+    /* ============================================================ */
+    .bank-stats {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .bank-stat {
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+    .bank-stat.up { background: #e8f5e9; color: #2e7d32; }
+    .bank-stat.down { background: #ffebee; color: #c62828; }
+    .bank-stat.total { background: #e3f2fd; color: #1565c0; }
+    
+    .bank-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      border-right: 4px solid #4caf50;
+      transition: all 0.3s;
+    }
+    .bank-item.down { border-right-color: #f44336; }
+    .bank-item:hover { background: #f0f0f0; }
+    
+    .bank-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .bank-icon { font-size: 20px; }
+    .bank-name { font-weight: bold; font-size: 14px; }
+    .bank-url { font-size: 11px; color: #888; }
+    
+    .bank-status {
+      text-align: left;
+    }
+    .bank-status .status-badge {
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .bank-status .status-badge.up { background: #e8f5e9; color: #2e7d32; }
+    .bank-status .status-badge.down { background: #ffebee; color: #c62828; }
+    .bank-status .response-time {
+      font-size: 10px;
+      color: #888;
+      margin-top: 2px;
+    }
+    
+    .bank-loading {
+      text-align: center;
+      padding: 20px;
+      color: #888;
+    }
+
+    /* ============================================================ */
     /* 📢 تنسيق الإعلانات */
     /* ============================================================ */
     .ad-container {
@@ -159,12 +242,7 @@
       min-height: 90px;
       overflow: hidden;
     }
-    
-    .ad-container ins {
-      display: block;
-      margin: 0 auto;
-    }
-    
+    .ad-container ins { display: block; margin: 0 auto; }
     .ad-label {
       font-size: 10px;
       color: #888;
@@ -178,6 +256,8 @@
       .usd-value { font-size: 40px; }
       .currency-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .ad-container { min-height: 70px; padding: 4px; }
+      .bank-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .bank-status { width: 100%; display: flex; justify-content: space-between; }
     }
   </style>
 </head>
@@ -219,14 +299,14 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- CONTENT -->
+  <!-- CONTENT (أسعار العملات) -->
   <!-- ============================================================ -->
   <div id="content" class="loading">
     جاري تحميل الأسعار...
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 2: إعلان Auto (بين المحتوى والأزرار) -->
+  <!-- 📢 إعلان 2: إعلان Auto (بين العملات والبنوك) -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
@@ -242,13 +322,55 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- REFRESH BUTTON -->
+  <!-- 🏦 حالة البنوك السودانية (مواقع) -->
+  <!-- ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <h2>🏦 حالة البنوك السودانية</h2>
+      <span class="badge" id="banks-update-time">جاري التحميل...</span>
+    </div>
+    
+    <div id="banks-container">
+      <div class="bank-loading">⏳ جاري تحميل حالة البنوك...</div>
+    </div>
+    
+    <button class="refresh-btn" onclick="checkBanks()" style="margin-top:15px;background:linear-gradient(135deg, #667eea, #764ba2);">
+      🔄 فحص البنوك الآن
+    </button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 📱 تطبيقات البنوك السودانية -->
+  <!-- ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <h2>📱 تطبيقات البنوك السودانية</h2>
+      <span class="badge" id="apps-update-time">جاري التحميل...</span>
+    </div>
+    
+    <div id="apps-container">
+      <div class="bank-loading">⏳ جاري تحميل التطبيقات...</div>
+    </div>
+    
+    <div style="display:flex;gap:10px;margin-top:15px;">
+      <button class="refresh-btn" onclick="checkApps()" style="flex:1;background:linear-gradient(135deg, #11998e, #38ef7d);">
+        🔄 فحص التطبيقات الآن
+      </button>
+    </div>
+    
+    <div style="font-size:11px;color:#888;margin-top:10px;text-align:center;">
+      ℹ️ يتم فحص توفر التطبيقات في متجر Google Play
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- REFRESH BUTTON (أسعار العملات) -->
   <!-- ============================================================ -->
   <button class="refresh-btn" id="refreshBtn" onclick="loadRates()">🔄 تحديث الأسعار</button>
   <div class="countdown" id="countdown">سيتم التحديث تلقائياً بعد 30 ثانية...</div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 3: إعلان آخر في الأسفل (اختياري) -->
+  <!-- 📢 إعلان 3: إعلان في الأسفل -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
@@ -269,6 +391,10 @@
 <!-- SCRIPTS -->
 <!-- ============================================================ -->
 <script>
+  // ============================================================
+  // 📊 دوال أسعار العملات
+  // ============================================================
+  
   let currentMarket = 'official';
   let ratesData = null;
   let countdownInterval = null;
@@ -321,7 +447,6 @@
     const currencies = marketData.currencies || {};
     const usdRate = currencies.USD?.rate || 0;
     
-    // حساب التغيير
     let change = 0;
     if (marketData.history && marketData.history.length > 0) {
       const lastHistory = marketData.history[0];
@@ -330,7 +455,6 @@
       }
     }
 
-    // عرض العملات الموجودة فقط (rate > 0)
     let currenciesHtml = '';
     for (const [code, curr] of Object.entries(currencies)) {
       if (code === 'USD') continue;
@@ -413,8 +537,227 @@
     }
   }
 
-  // تحميل الأسعار عند فتح الصفحة
+  // ============================================================
+  // 🏦 دوال فحص البنوك (مواقع)
+  // ============================================================
+
+  async function loadBanksStatus() {
+    const container = document.getElementById('banks-container');
+    container.innerHTML = '<div class="bank-loading">⏳ جاري تحميل حالة البنوك...</div>';
+    
+    try {
+      const response = await fetch('/api/banks');
+      const data = await response.json();
+      
+      if (data.success) {
+        displayBanks(data);
+      } else {
+        container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ فشل تحميل حالة البنوك</div>';
+      }
+    } catch (error) {
+      console.error('خطأ في تحميل حالة البنوك:', error);
+      container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ خطأ في الاتصال بالخادم</div>';
+    }
+  }
+
+  function displayBanks(data) {
+    const container = document.getElementById('banks-container');
+    const updateTime = document.getElementById('banks-update-time');
+    
+    if (updateTime) {
+      const date = new Date(data.lastUpdated);
+      updateTime.textContent = `🕐 ${date.toLocaleString('ar-EG')}`;
+    }
+    
+    const statsHtml = `
+      <div class="bank-stats">
+        <span class="bank-stat up">✅ يعمل: ${data.up}</span>
+        <span class="bank-stat down">❌ معطل: ${data.down}</span>
+        <span class="bank-stat total">📊 ${data.upPercentage}% متاح</span>
+      </div>
+    `;
+    
+    let banksHtml = '';
+    for (const bank of data.banks) {
+      const isUp = bank.status === 'up';
+      banksHtml += `
+        <div class="bank-item ${!isUp ? 'down' : ''}">
+          <div class="bank-info">
+            <span class="bank-icon">${bank.icon || '🏛️'}</span>
+            <div>
+              <div class="bank-name">${bank.name}</div>
+              <div class="bank-url">${bank.url}</div>
+            </div>
+          </div>
+          <div class="bank-status">
+            <span class="status-badge ${isUp ? 'up' : 'down'}">${isUp ? '✅ يعمل' : '❌ معطل'}</span>
+            <div class="response-time">${bank.responseTime || 0}ms</div>
+          </div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = statsHtml + banksHtml;
+  }
+
+  async function checkBanks() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري الفحص...';
+    
+    try {
+      const response = await fetch('/api/banks/check', { method: 'POST' });
+      const data = await response.json();
+      
+      if (data.success) {
+        displayBanks(data);
+        showToast('✅ تم فحص البنوك بنجاح');
+      } else {
+        showToast('❌ فشل فحص البنوك');
+      }
+    } catch (error) {
+      showToast('❌ خطأ في الاتصال');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔄 فحص البنوك الآن';
+    }
+  }
+
+  // ============================================================
+  // 📱 دوال فحص تطبيقات البنوك
+  // ============================================================
+
+  async function loadAppsStatus() {
+    const container = document.getElementById('apps-container');
+    container.innerHTML = '<div class="bank-loading">⏳ جاري تحميل التطبيقات...</div>';
+    
+    try {
+      const response = await fetch('/api/apps');
+      const data = await response.json();
+      
+      if (data.success) {
+        displayApps(data);
+      } else {
+        container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ فشل تحميل التطبيقات</div>';
+      }
+    } catch (error) {
+      console.error('خطأ في تحميل التطبيقات:', error);
+      container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ خطأ في الاتصال بالخادم</div>';
+    }
+  }
+
+  function displayApps(data) {
+    const container = document.getElementById('apps-container');
+    const updateTime = document.getElementById('apps-update-time');
+    
+    if (updateTime) {
+      const date = new Date(data.lastUpdated);
+      updateTime.textContent = `🕐 ${date.toLocaleString('ar-EG')}`;
+    }
+    
+    const statsHtml = `
+      <div class="bank-stats">
+        <span class="bank-stat up">✅ متاح: ${data.available}</span>
+        <span class="bank-stat down">❌ غير متاح: ${data.unavailable}</span>
+        <span class="bank-stat total">📊 ${data.upPercentage}% متاح</span>
+      </div>
+    `;
+    
+    let appsHtml = '';
+    for (const app of data.apps) {
+      const isAvailable = app.status === 'available';
+      const isError = app.status === 'error';
+      const statusText = isError ? '⚠️ خطأ' : (isAvailable ? '✅ متاح' : '❌ غير متاح');
+      const statusClass = isError ? 'down' : (isAvailable ? 'up' : 'down');
+      
+      appsHtml += `
+        <div class="bank-item ${!isAvailable ? 'down' : ''}">
+          <div class="bank-info">
+            <span class="bank-icon">${app.icon || '📱'}</span>
+            <div>
+              <div class="bank-name">${app.name}</div>
+              <div class="bank-url" style="font-size:10px;color:#888;">${app.packageName || ''}</div>
+            </div>
+          </div>
+          <div class="bank-status">
+            <span class="status-badge ${statusClass}">${statusText}</span>
+            ${app.rating && app.rating !== 'غير متاح' ? `<div class="response-time">⭐ ${app.rating}</div>` : ''}
+            ${app.downloads && app.downloads !== 'غير متاح' ? `<div class="response-time">📥 ${app.downloads}</div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = statsHtml + appsHtml;
+  }
+
+  async function checkApps() {
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري الفحص...';
+    
+    try {
+      const response = await fetch('/api/apps/check', { method: 'POST' });
+      const data = await response.json();
+      
+      if (data.success) {
+        displayApps(data);
+        showToast('✅ تم فحص التطبيقات بنجاح');
+      } else {
+        showToast('❌ فشل فحص التطبيقات');
+      }
+    } catch (error) {
+      showToast('❌ خطأ في الاتصال');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔄 فحص التطبيقات الآن';
+    }
+  }
+
+  // ============================================================
+  // 🔔 Toast Notification
+  // ============================================================
+  
+  function showToast(message) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'toast';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-size: 14px;
+        z-index: 1000;
+        display: none;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      `;
+      document.body.appendChild(toast);
+    }
+    
+    toast.textContent = message;
+    toast.style.display = 'block';
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 3000);
+  }
+
+  // ============================================================
+  // 🚀 تحميل البيانات عند فتح الصفحة
+  // ============================================================
+  
   loadRates();
+  loadBanksStatus();
+  loadAppsStatus();
+  
+  // تحديث دوري
+  setInterval(loadBanksStatus, 5 * 60 * 1000);  // كل 5 دقائق
+  setInterval(loadAppsStatus, 10 * 60 * 1000);  // كل 10 دقائق
 </script>
 
 </body>

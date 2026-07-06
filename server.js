@@ -4,7 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const multer = require("multer");
-const { exec } = require("child_process"); // ✅ أضف هذا السطر
+const { exec } = require("child_process");
 const { extractTextFromImage, extractCurrencyFromText } = require("./utils/ocr");
 
 const app = express();
@@ -36,6 +36,64 @@ const storage = multer.diskStorage({
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 // ============================================================
+// 🏦 فحص البنوك (مواقع)
+// ============================================================
+const { checkAllBanks, getLastResults: getLastBankResults, BANKS } = require('./bank-checker');
+
+// API: الحصول على حالة البنوك
+app.get('/api/banks', (req, res) => {
+  const data = getLastBankResults();
+  if (data) {
+    res.json({ success: true, ...data });
+  } else {
+    checkAllBanks().then(result => {
+      res.json({ success: true, ...result });
+    }).catch(error => {
+      res.status(500).json({ success: false, error: error.message });
+    });
+  }
+});
+
+// API: تشغيل فحص جديد للبنوك
+app.post('/api/banks/check', async (req, res) => {
+  try {
+    const result = await checkAllBanks();
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================
+// 📱 فحص تطبيقات البنوك
+// ============================================================
+const { checkAllApps, getLastResults: getLastAppResults, APPS } = require('./app-checker');
+
+// API: الحصول على حالة التطبيقات
+app.get('/api/apps', (req, res) => {
+  const data = getLastAppResults();
+  if (data) {
+    res.json({ success: true, ...data });
+  } else {
+    checkAllApps().then(result => {
+      res.json({ success: true, ...result });
+    }).catch(error => {
+      res.status(500).json({ success: false, error: error.message });
+    });
+  }
+});
+
+// API: تشغيل فحص جديد للتطبيقات
+app.post('/api/apps/check', async (req, res) => {
+  try {
+    const result = await checkAllApps();
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================
 // 📂 قراءة البيانات من الملفات
 // ============================================================
 
@@ -43,8 +101,8 @@ const DATA_FILE = path.join(__dirname, "data.json");
 
 // مسار ملف البيانات من السكراب
 const SCRAPER_DATA_FILE = isProduction
-  ? path.join('/tmp', 'rates.json')           // ✅ على Render/Vercel
-  : path.join(__dirname, "data", "rates.json"); // ✅ على جهازك المحلي
+  ? path.join('/tmp', 'rates.json')
+  : path.join(__dirname, "data", "rates.json");
 
 console.log(`📂 بيئة التشغيل: ${isProduction ? 'إنتاج (Production)' : 'تطوير (Development)'}`);
 console.log(`📂 مسار بيانات السكراب: ${SCRAPER_DATA_FILE}`);
@@ -84,7 +142,6 @@ function getMergedData() {
   if (scraperData && scraperData.official && scraperData.official.currencies) {
     console.log("📊 تم تحميل بيانات السكراب من data/rates.json");
     
-    // ✅ استبدال العملات بالكامل (لا دمج)
     baseData.official.currencies = scraperData.official.currencies || {};
     baseData.official.lastUpdated = scraperData.official.lastUpdated || new Date().toISOString();
     baseData.official.updatedBy = scraperData.official.updatedBy || "alsoug_scraper";
@@ -128,8 +185,6 @@ const ADMIN_KEY = "AdminSudan";
 // ============================================================
 // 🚀 تشغيل سكربت السحب عند بدء التشغيل
 // ============================================================
-
-// تشغيل السكربت فور بدء الخادم (مرة واحدة)
 exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   if (error) {
     console.error("❌ فشل تشغيل سكربت السحب:", error.message);
@@ -137,7 +192,6 @@ exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   }
   if (stdout) console.log(stdout);
   if (stderr) console.error(stderr);
-  // تحديث البيانات في الذاكرة بعد السحب
   data = getMergedData();
   console.log("✅ تم تحديث البيانات بنجاح!");
 });
@@ -245,9 +299,7 @@ app.post("/admin/upload-bank-image", upload.single("bankImage"), async (req, res
 // 📊 API: الحصول على جميع الأسعار
 // ============================================================
 app.get("/api/rates", (req, res) => {
-  // إعادة تحميل البيانات من الملفات قبل الإرسال
   data = getMergedData();
-  
   res.json({
     success: true,
     official: data.official,
@@ -285,7 +337,7 @@ setInterval(() => {
     if (stderr) console.error(stderr);
     data = getMergedData();
   });
-}, 60 * 60 * 1000); // كل ساعة
+}, 60 * 60 * 1000);
 
 console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساعة");
 
@@ -296,7 +348,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   
-  // ✅ التحقق من وجود البيانات قبل استخدامها
   const currencyCount = data?.official?.currencies 
     ? Object.keys(data.official.currencies).length 
     : 0;
