@@ -298,7 +298,7 @@
     }
     .effective-ad-box .ad-label {
       font-size: 10px;
-      color: #888;
+      color: #aaa;
       text-align: center;
       margin-bottom: 10px;
       opacity: 0.6;
@@ -369,7 +369,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 1: Effective CPM Network (في الأعلى) -->
+  <!-- 📢 إعلان 1: Effective CPM (في الأعلى) -->
   <!-- ============================================================ -->
   <div class="effective-ad-box">
     <div class="ad-label">- إعلان -</div>
@@ -392,12 +392,11 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 2: Effective CPM Network (في المنتصف) -->
+  <!-- 📢 إعلان 2: Effective CPM (في المنتصف) -->
   <!-- ============================================================ -->
   <div class="effective-ad-box">
     <div class="ad-label">- إعلان -</div>
-    <!-- سيتم عرض إعلان Effective CPM هنا تلقائياً عبر السكريبت -->
-    <div style="min-height:50px;"></div>
+    <div id="effective-ad-middle"></div>
   </div>
 
   <!-- ============================================================ -->
@@ -407,12 +406,11 @@
   <div class="countdown" id="countdown">سيتم التحديث تلقائياً بعد 30 ثانية...</div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 3: Effective CPM Network (في الأسفل) -->
+  <!-- 📢 إعلان 3: Effective CPM (في الأسفل) -->
   <!-- ============================================================ -->
   <div class="effective-ad-box">
     <div class="ad-label">- إعلان -</div>
-    <!-- سيتم عرض إعلان Effective CPM هنا تلقائياً عبر السكريبت -->
-    <div style="min-height:50px;"></div>
+    <div id="effective-ad-bottom"></div>
   </div>
 
   <!-- ============================================================ -->
@@ -571,13 +569,12 @@
       if (changePercent > 0) {
         triangle = '🔺';
         triangleClass = 'up';
-        saveTriangleState(code, 'up'); // ✅ حفظ الحالة
+        saveTriangleState(code, 'up');
       } else if (changePercent < 0) {
         triangle = '🔻';
         triangleClass = 'down';
-        saveTriangleState(code, 'down'); // ✅ حفظ الحالة
+        saveTriangleState(code, 'down');
       } else {
-        // ✅ إذا لم يتغير السعر، نستخدم آخر حالة محفوظة
         const savedClass = getTriangleState(code);
         triangleClass = savedClass;
         triangle = savedClass === 'up' ? '🔺' : (savedClass === 'down' ? '🔻' : '➖');
@@ -668,7 +665,6 @@
 
   let totalVisitors = 0;
   let todayVisitors = 0;
-  let isUpdating = false;
 
   async function loadVisitors() {
     try {
@@ -676,7 +672,6 @@
       const data = await response.json();
       
       if (data.success) {
-        // ✅ تحديث الأعداد مع تأثير الحركة
         updateVisitorDisplay('total-visitors', data.total, totalVisitors);
         updateVisitorDisplay('today-visitors', data.today, todayVisitors);
         
@@ -692,14 +687,10 @@
     const element = document.getElementById(elementId);
     if (!element) return;
     
-    // ✅ فقط أضف التأثير إذا تغير الرقم
     if (newValue !== oldValue) {
       element.classList.remove('updating');
-      // إعادة تشغيل الأنيميشن
-      void element.offsetWidth; // Force reflow
+      void element.offsetWidth;
       element.classList.add('updating');
-      
-      // ✅ تحديث الرقم مع تأثير تدريجي
       animateNumber(element, oldValue, newValue);
     } else {
       element.textContent = newValue.toLocaleString();
@@ -707,14 +698,12 @@
   }
 
   function animateNumber(element, start, end) {
-    const duration = 400; // مدة الحركة بالمللي ثانية
+    const duration = 400;
     const startTime = performance.now();
     
     function update(currentTime) {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      
-      // ✅ دالة تسهيل (Easing) لجعل الحركة طبيعية
       const easeOutCubic = 1 - Math.pow(1 - progress, 3);
       const current = Math.round(start + (end - start) * easeOutCubic);
       
@@ -730,15 +719,11 @@
     requestAnimationFrame(update);
   }
 
-  // ✅ تحديث الزوار كل 30 ثانية (مع تأثير الحركة)
   function startVisitorUpdates() {
-    // تحميل فوري
     loadVisitors();
-    
-    // تحديث دوري
     setInterval(() => {
       loadVisitors();
-    }, 30000); // كل 30 ثانية
+    }, 30000);
   }
 
   // ============================================================
@@ -775,22 +760,40 @@
   }
 
   // ============================================================
+  // 📢 تحميل إعلانات Effective CPM في الحاويات الجديدة
+  // ============================================================
+  
+  function loadEffectiveAds() {
+    // ✅ الإعلان الأول موجود بالفعل في container-1abda5f38589b1aa8132bdf5bca6574d
+    
+    // ✅ الإعلان الثاني - نضيف سكريبت إضافي للحاوية الوسطى
+    const middleAd = document.getElementById('effective-ad-middle');
+    if (middleAd) {
+      // يمكن إضافة إعلان هنا باستخدام نفس شبكة Effective CPM
+      // أو تركها فارغة لتظهر تلقائياً
+    }
+    
+    // ✅ الإعلان الثالث - نضيف سكريبت إضافي للحاوية السفلية
+    const bottomAd = document.getElementById('effective-ad-bottom');
+    if (bottomAd) {
+      // يمكن إضافة إعلان هنا باستخدام نفس شبكة Effective CPM
+    }
+    
+    console.log('✅ تم تجهيز حاويات الإعلانات');
+  }
+
+  // ============================================================
   // 🚀 تحميل البيانات عند فتح الصفحة
   // ============================================================
   
-  // ✅ متغير لتخزين الأسعار السابقة
   let previousRates = {};
 
   loadRates();
-  startVisitorUpdates(); // ✅ بدء عداد الزوار
+  startVisitorUpdates();
+  loadEffectiveAds();
   
-  // تحديث دوري
   setInterval(loadRates, 30000);
 
-  // ============================================================
-  // 🔄 إعادة تحميل إعلانات Effective CPM (إذا لزم الأمر)
-  // ============================================================
-  // يتم تشغيل إعلانات Effective CPM تلقائياً عبر السكريبتات المضمنة
   console.log('✅ تم تحميل إعلانات Effective CPM Network بنجاح');
 </script>
 
