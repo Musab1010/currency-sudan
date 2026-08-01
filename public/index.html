@@ -6,14 +6,16 @@
   <title>💱 أسعار العملات في السودان</title>
   
   <!-- ============================================================ -->
-  <!-- 📢 Google AdSense -->
+  <!-- 📢 Google AdSense - تم التعليق -->
   <!-- ============================================================ -->
+  <!--
   <meta name="google-adsense-account" content="ca-pub-9292164597330465">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9292164597330465"
      crossorigin="anonymous"></script>
+  -->
   
   <!-- ============================================================ -->
-  <!-- 📢 Effective CPM Network - الإعلانات الجديدة -->
+  <!-- 📢 Effective CPM Network - الإعلانات النشطة -->
   <!-- ============================================================ -->
   <script src="https://pl30631156.effectivecpmnetwork.com/4e/d6/34/4ed634d6b29140818ec85b67301f215e.js"></script>
   <script async="async" data-cfasync="false" src="https://pl30631155.effectivecpmnetwork.com/1abda5f38589b1aa8132bdf5bca6574d/invoke.js"></script>
@@ -279,37 +281,7 @@
     }
 
     /* ============================================================ */
-    /* 📢 تنسيق الإعلانات */
-    /* ============================================================ */
-    .ad-container {
-      margin: 15px 0;
-      text-align: center;
-      background: rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 8px;
-      min-height: 90px;
-      overflow: hidden;
-    }
-    .ad-container ins { display: block; margin: 0 auto; }
-    .ad-label {
-      font-size: 10px;
-      color: #888;
-      text-align: center;
-      margin-bottom: 5px;
-      opacity: 0.6;
-    }
-    
-    /* تنسيق إعلانات Effective CPM */
-    .effective-ad {
-      margin: 10px 0;
-      min-height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    /* ============================================================ */
-    /* 📢 إعلان منفصل - Effective CPM (مربع) */
+    /* 📢 تنسيق الإعلانات - Effective CPM فقط */
     /* ============================================================ */
     .effective-ad-box {
       background: rgba(255,255,255,0.05);
@@ -325,14 +297,17 @@
       justify-content: center;
     }
     .effective-ad-box .ad-label {
+      font-size: 10px;
+      color: #888;
+      text-align: center;
       margin-bottom: 10px;
+      opacity: 0.6;
     }
     
     /* تحسين عرض الإعلانات على الجوال */
     @media (max-width: 500px) {
       .usd-value { font-size: 40px; }
       .currency-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-      .ad-container { min-height: 70px; padding: 4px; }
       .visitors-container {
         gap: 10px;
         padding: 10px 14px;
@@ -394,23 +369,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 1: Google AdSense (Fluid) -->
-  <!-- ============================================================ -->
-  <div class="ad-container">
-    <div class="ad-label">- إعلان -</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-format="fluid"
-         data-ad-layout-key="-6t+ed+2i-1n-4w"
-         data-ad-client="ca-pub-9292164597330465"
-         data-ad-slot="5006593281"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 📢 إعلان 2: Effective CPM Network (في المنتصف) -->
+  <!-- 📢 إعلان 1: Effective CPM Network (في الأعلى) -->
   <!-- ============================================================ -->
   <div class="effective-ad-box">
     <div class="ad-label">- إعلان -</div>
@@ -433,23 +392,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 3: Google AdSense (Auto) -->
-  <!-- ============================================================ -->
-  <div class="ad-container">
-    <div class="ad-label">- إعلان -</div>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-9292164597330465"
-         data-ad-slot="7240050556"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
-
-  <!-- ============================================================ -->
-  <!-- 📢 إعلان 4: Effective CPM Network (في الأسفل) -->
+  <!-- 📢 إعلان 2: Effective CPM Network (في المنتصف) -->
   <!-- ============================================================ -->
   <div class="effective-ad-box">
     <div class="ad-label">- إعلان -</div>
@@ -464,8 +407,33 @@
   <div class="countdown" id="countdown">سيتم التحديث تلقائياً بعد 30 ثانية...</div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 5: Google AdSense (في الأسفل) -->
+  <!-- 📢 إعلان 3: Effective CPM Network (في الأسفل) -->
   <!-- ============================================================ -->
+  <div class="effective-ad-box">
+    <div class="ad-label">- إعلان -</div>
+    <!-- سيتم عرض إعلان Effective CPM هنا تلقائياً عبر السكريبت -->
+    <div style="min-height:50px;"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 📢 إعلانات Google AdSense - تم التعليق -->
+  <!-- ============================================================ -->
+  <!-- 
+  <div class="ad-container">
+    <div class="ad-label">- إعلان -</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="fluid"
+         data-ad-layout-key="-6t+ed+2i-1n-4w"
+         data-ad-client="ca-pub-9292164597330465"
+         data-ad-slot="5006593281"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  -->
+
+  <!-- 
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
     <ins class="adsbygoogle"
@@ -478,6 +446,22 @@
          (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
   </div>
+  -->
+
+  <!-- 
+  <div class="ad-container">
+    <div class="ad-label">- إعلان -</div>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-9292164597330465"
+         data-ad-slot="7240050556"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  -->
 
 </div>
 
