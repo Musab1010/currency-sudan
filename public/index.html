@@ -12,6 +12,13 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9292164597330465"
      crossorigin="anonymous"></script>
   
+  <!-- ============================================================ -->
+  <!-- 📢 Effective CPM Network - الإعلانات الجديدة -->
+  <!-- ============================================================ -->
+  <script src="https://pl30631156.effectivecpmnetwork.com/4e/d6/34/4ed634d6b29140818ec85b67301f215e.js"></script>
+  <script async="async" data-cfasync="false" src="https://pl30631155.effectivecpmnetwork.com/1abda5f38589b1aa8132bdf5bca6574d/invoke.js"></script>
+  <script src="https://pl30631154.effectivecpmnetwork.com/3c/1c/ad/3c1cad7de7a469e6b5ff22f12647ccc2.js"></script>
+  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -292,6 +299,35 @@
       opacity: 0.6;
     }
     
+    /* تنسيق إعلانات Effective CPM */
+    .effective-ad {
+      margin: 10px 0;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* ============================================================ */
+    /* 📢 إعلان منفصل - Effective CPM (مربع) */
+    /* ============================================================ */
+    .effective-ad-box {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 12px;
+      margin: 15px 0;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .effective-ad-box .ad-label {
+      margin-bottom: 10px;
+    }
+    
     /* تحسين عرض الإعلانات على الجوال */
     @media (max-width: 500px) {
       .usd-value { font-size: 40px; }
@@ -314,6 +350,10 @@
       }
       .visitor-divider {
         height: 25px;
+      }
+      .effective-ad-box {
+        min-height: 80px;
+        padding: 8px;
       }
     }
   </style>
@@ -354,7 +394,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 1: إعلان Fluid (في الأعلى) -->
+  <!-- 📢 إعلان 1: Google AdSense (Fluid) -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
@@ -367,6 +407,14 @@
     <script>
          (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 📢 إعلان 2: Effective CPM Network (في المنتصف) -->
+  <!-- ============================================================ -->
+  <div class="effective-ad-box">
+    <div class="ad-label">- إعلان -</div>
+    <div id="container-1abda5f38589b1aa8132bdf5bca6574d"></div>
   </div>
 
   <!-- ============================================================ -->
@@ -385,7 +433,7 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 2: إعلان Auto (بين العملات والتطبيقات) -->
+  <!-- 📢 إعلان 3: Google AdSense (Auto) -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
@@ -401,30 +449,13 @@
   </div>
 
   <!-- ============================================================ -->
-  <!-- ❌ تم تعليق قسم تطبيقات البنوك السودانية -->
+  <!-- 📢 إعلان 4: Effective CPM Network (في الأسفل) -->
   <!-- ============================================================ -->
-  <!-- 
-  <div class="card">
-    <div class="card-header">
-      <h2>📱 تطبيقات البنوك السودانية</h2>
-      <span class="badge" id="apps-update-time">جاري التحميل...</span>
-    </div>
-    
-    <div id="apps-container">
-      <div class="bank-loading">⏳ جاري تحميل التطبيقات...</div>
-    </div>
-    
-    <div style="display:flex;gap:10px;margin-top:15px;">
-      <button class="refresh-btn" onclick="checkApps()" style="flex:1;background:linear-gradient(135deg, #11998e, #38ef7d);">
-        🔄 فحص التطبيقات الآن
-      </button>
-    </div>
-    
-    <div style="font-size:11px;color:#888;margin-top:10px;text-align:center;">
-      ℹ️ يتم فحص توفر التطبيقات في متجر Google Play
-    </div>
+  <div class="effective-ad-box">
+    <div class="ad-label">- إعلان -</div>
+    <!-- سيتم عرض إعلان Effective CPM هنا تلقائياً عبر السكريبت -->
+    <div style="min-height:50px;"></div>
   </div>
-  -->
 
   <!-- ============================================================ -->
   <!-- REFRESH BUTTON (أسعار العملات) -->
@@ -433,7 +464,7 @@
   <div class="countdown" id="countdown">سيتم التحديث تلقائياً بعد 30 ثانية...</div>
 
   <!-- ============================================================ -->
-  <!-- 📢 إعلان 3: إعلان في الأسفل -->
+  <!-- 📢 إعلان 5: Google AdSense (في الأسفل) -->
   <!-- ============================================================ -->
   <div class="ad-container">
     <div class="ad-label">- إعلان -</div>
@@ -648,98 +679,6 @@
   }
 
   // ============================================================
-  // ❌ تم تعليق دوال فحص تطبيقات البنوك
-  // ============================================================
-  /*
-  async function loadAppsStatus() {
-    const container = document.getElementById('apps-container');
-    container.innerHTML = '<div class="bank-loading">⏳ جاري تحميل التطبيقات...</div>';
-    
-    try {
-      const response = await fetch('/api/apps');
-      const data = await response.json();
-      
-      if (data.success) {
-        displayApps(data);
-      } else {
-        container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ فشل تحميل التطبيقات</div>';
-      }
-    } catch (error) {
-      console.error('خطأ في تحميل التطبيقات:', error);
-      container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">❌ خطأ في الاتصال بالخادم</div>';
-    }
-  }
-
-  function displayApps(data) {
-    const container = document.getElementById('apps-container');
-    const updateTime = document.getElementById('apps-update-time');
-    
-    if (updateTime) {
-      const date = new Date(data.lastUpdated);
-      updateTime.textContent = `🕐 ${date.toLocaleString('ar-EG')}`;
-    }
-    
-    const statsHtml = `
-      <div class="bank-stats">
-        <span class="bank-stat up">✅ متاح: ${data.available}</span>
-        <span class="bank-stat down">❌ غير متاح: ${data.unavailable}</span>
-        <span class="bank-stat total">📊 ${data.upPercentage}% متاح</span>
-      </div>
-    `;
-    
-    let appsHtml = '';
-    for (const app of data.apps) {
-      const isAvailable = app.status === 'available';
-      const isError = app.status === 'error';
-      const statusText = isError ? '⚠️ خطأ' : (isAvailable ? '✅ متاح' : '❌ غير متاح');
-      const statusClass = isError ? 'down' : (isAvailable ? 'up' : 'down');
-      
-      appsHtml += `
-        <div class="bank-item ${!isAvailable ? 'down' : ''}">
-          <div class="bank-info">
-            <span class="bank-icon">${app.icon || '📱'}</span>
-            <div>
-              <div class="bank-name">${app.name}</div>
-              <div class="bank-url" style="font-size:10px;color:#888;">${app.packageName || ''}</div>
-            </div>
-          </div>
-          <div class="bank-status">
-            <span class="status-badge ${statusClass}">${statusText}</span>
-            ${app.rating && app.rating !== 'غير متاح' ? `<div class="response-time">⭐ ${app.rating}</div>` : ''}
-            ${app.downloads && app.downloads !== 'غير متاح' ? `<div class="response-time">📥 ${app.downloads}</div>` : ''}
-          </div>
-        </div>
-      `;
-    }
-    
-    container.innerHTML = statsHtml + appsHtml;
-  }
-
-  async function checkApps() {
-    const btn = event.target;
-    btn.disabled = true;
-    btn.textContent = '⏳ جاري الفحص...';
-    
-    try {
-      const response = await fetch('/api/apps/check', { method: 'POST' });
-      const data = await response.json();
-      
-      if (data.success) {
-        displayApps(data);
-        showToast('✅ تم فحص التطبيقات بنجاح');
-      } else {
-        showToast('❌ فشل فحص التطبيقات');
-      }
-    } catch (error) {
-      showToast('❌ خطأ في الاتصال');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = '🔄 فحص التطبيقات الآن';
-    }
-  }
-  */
-
-  // ============================================================
   // 👥 دوال عداد الزوار
   // ============================================================
 
@@ -859,12 +798,16 @@
   let previousRates = {};
 
   loadRates();
-  // loadAppsStatus(); // ❌ تم تعليق تحميل التطبيقات
   startVisitorUpdates(); // ✅ بدء عداد الزوار
   
   // تحديث دوري
   setInterval(loadRates, 30000);
-  // setInterval(loadAppsStatus, 10 * 60 * 1000); // ❌ تم تعليق تحديث التطبيقات
+
+  // ============================================================
+  // 🔄 إعادة تحميل إعلانات Effective CPM (إذا لزم الأمر)
+  // ============================================================
+  // يتم تشغيل إعلانات Effective CPM تلقائياً عبر السكريبتات المضمنة
+  console.log('✅ تم تحميل إعلانات Effective CPM Network بنجاح');
 </script>
 
 </body>

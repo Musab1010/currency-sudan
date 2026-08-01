@@ -421,7 +421,7 @@ function logRealVisitor(req) {
     // زيادة العداد
     data.total += 1;
     data.today += 1;
-    data.online = Math.min(data.online + 1, 50); // حد أقصى 50 متصل
+    data.online = Math.min(data.online + 1, 50);
     
     // إضافة الزيارة إلى السجل
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'غير معروف';
@@ -440,16 +440,20 @@ function logRealVisitor(req) {
     }
     
     fs.writeFileSync(REAL_VISITORS_FILE, JSON.stringify(data, null, 2));
+    console.log(`👤 تم تسجيل زائر حقيقي: ${ip} (${browser})`);
   } catch (error) {
-    console.error('خطأ في تسجيل الزائر:', error.message);
+    console.error('❌ خطأ في تسجيل الزائر:', error.message);
   }
 }
 
-// ✅ تسجيل الزوار الحقيقيين (Middleware)
+// ✅ تسجيل الزوار الحقيقيين (Middleware) - النسخة المحسنة
 app.use((req, res, next) => {
-  // تجاهل طلبات API والملفات الثابتة
-  if (!req.path.startsWith('/api/') && !req.path.startsWith('/admin') && 
-      !req.path.includes('.') && req.path !== '/') {
+  // تسجيل الزوار فقط عند فتح الصفحة الرئيسية أو أي صفحة عادية (ليست API أو Admin)
+  if (!req.path.startsWith('/api/') && 
+      !req.path.startsWith('/admin') && 
+      !req.path.includes('.') && 
+      req.path !== '/favicon.ico' &&
+      req.path !== '/') {
     logRealVisitor(req);
   }
   next();
