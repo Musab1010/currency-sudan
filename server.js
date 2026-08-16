@@ -1,4 +1,4 @@
-// server.js - الكود الكامل النهائي مع الزوار الحقيقيين والوهميين
+// server.js - الكود الكامل النهائي مع الزوار الحقيقيين والوهميين (تم إصلاح تسجيل الزوار)
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -166,6 +166,7 @@ function saveData() {
 
 const ADMIN_KEY = "AdminSudan";
 
+// تشغيل سكربت السحب عند بدء التشغيل
 exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   if (error) {
     console.error("❌ فشل تشغيل سكربت السحب:", error.message);
@@ -176,6 +177,10 @@ exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   data = getMergedData();
   console.log("✅ تم تحديث البيانات بنجاح!");
 });
+
+// ============================================================
+// 🔧 إدارة العملات (Admin)
+// ============================================================
 
 app.post("/admin/update/currency", (req, res) => {
   const { currencyCode, rate, market, adminKey, updatedBy } = req.body;
@@ -269,6 +274,10 @@ app.post("/admin/upload-bank-image", upload.single("bankImage"), async (req, res
     res.status(500).json({ error: "فشل في معالجة الصورة", details: error.message });
   }
 });
+
+// ============================================================
+// 📊 APIs
+// ============================================================
 
 app.get("/api/rates", (req, res) => {
   data = getMergedData();
@@ -377,7 +386,7 @@ function updateVisitors() {
   data.lastUpdate = now.toISOString();
   
   saveVisitors(data);
-  console.log(`👥 تم تحديث الزوار: +${increase} (الإجمالي: ${data.total}, اليوم: ${data.today})`);
+  console.log(`👥 تم تحديث الزوار الوهميين: +${increase} (الإجمالي: ${data.total}, اليوم: ${data.today})`);
 }
 
 setInterval(updateVisitors, 60 * 60 * 1000);
@@ -396,7 +405,7 @@ app.get('/api/visitors', (req, res) => {
 console.log('👥 نظام الزوار الوهميين يعمل (تحديث كل ساعة)');
 
 // ============================================================
-// 👥 الزوار الحقيقيين
+// 👥 الزوار الحقيقيين (تم إصلاح المشكلة)
 // ============================================================
 
 const REAL_VISITORS_FILE = path.join(__dirname, "data", "real-visitors.json");
@@ -446,14 +455,13 @@ function logRealVisitor(req) {
   }
 }
 
-// ✅ تسجيل الزوار الحقيقيين (Middleware) - النسخة المحسنة
+// ✅ تسجيل الزوار الحقيقيين (Middleware) - النسخة المحسنة مع إصلاح المشكلة
 app.use((req, res, next) => {
   // تسجيل الزوار فقط عند فتح الصفحة الرئيسية أو أي صفحة عادية (ليست API أو Admin)
   if (!req.path.startsWith('/api/') && 
       !req.path.startsWith('/admin') && 
       !req.path.includes('.') && 
-      req.path !== '/favicon.ico' &&
-      req.path !== '/') {
+      req.path !== '/favicon.ico') {  // ✅ تم إزالة الشرط الذي كان يمنع تسجيل الصفحة الرئيسية
     logRealVisitor(req);
   }
   next();
@@ -498,7 +506,7 @@ app.get('/api/real-visitors', (req, res) => {
   }
 });
 
-console.log('👥 نظام الزوار الحقيقيين يعمل');
+console.log('👥 نظام الزوار الحقيقيين يعمل (تم إصلاح مشكلة تسجيل الزوار)');
 
 // ============================================================
 // 🚀 تشغيل الخادم

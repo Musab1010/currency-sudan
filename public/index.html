@@ -659,8 +659,9 @@
   <!-- MARKET TABS -->
   <!-- ============================================================ -->
   <div class="market-tab">
-    <button class="tab-btn active" id="tab-official" onclick="showMarket('official')">🏦 السعر الرسمي</button>
-    <button class="tab-btn" id="tab-parallel" onclick="showMarket('parallel')">📈 السوق الموازي</button>
+    <!-- ✅ تم تبديل الترتيب: السوق الموازي أولاً -->
+    <button class="tab-btn active" id="tab-parallel" onclick="showMarket('parallel')">📈 الموازي</button>
+    <button class="tab-btn" id="tab-official" onclick="showMarket('official')">🏦 الرسمي</button>
   </div>
 
   <!-- ============================================================ -->
@@ -721,7 +722,8 @@
   // 📊 دوال أسعار العملات
   // ============================================================
   
-  let currentMarket = 'official';
+  // ✅ جعل السوق الموازي هو الافتراضي
+  let currentMarket = 'parallel';
   let ratesData = null;
   let countdownInterval = null;
   let countdownValue = 30;
@@ -869,7 +871,6 @@
 
         <div class="update-info">
           📅 آخر تحديث: ${formattedDate}<br>
-          👤 بواسطة: ${marketData.updatedBy || 'system'}
         </div>
       </div>
     `;
@@ -1008,7 +1009,7 @@
     setInterval(loadRates, 30000);
     
     console.log('✅ تم تحميل الصفحة بنجاح مع جميع التحسينات');
-    console.log('🚀 SEO محسّن | تصميم عصري | إعلان واحد فقط');
+    console.log('🚀 السوق الموازي هو الظاهر افتراضياً');
   });
 </script>
 
