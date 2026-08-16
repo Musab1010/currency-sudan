@@ -1,4 +1,4 @@
-// server.js - الكود الكامل النهائي مع الزوار الحقيقيين والوهميين (تم إصلاح تسجيل الزوار)
+// server.js - نظام الزوار الوهميين فقط (متوافق مع الملف الحالي)
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -20,7 +20,6 @@ app.use("/uploads", express.static("uploads"));
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-// إعداد رفع الملفات (للاستخدام المحلي فقط)
 const uploadDir = path.join(__dirname, "uploads");
 if (!isProduction && !fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -166,7 +165,6 @@ function saveData() {
 
 const ADMIN_KEY = "AdminSudan";
 
-// تشغيل سكربت السحب عند بدء التشغيل
 exec("node scrape-alsoug.js", (error, stdout, stderr) => {
   if (error) {
     console.error("❌ فشل تشغيل سكربت السحب:", error.message);
@@ -320,24 +318,32 @@ setInterval(() => {
 console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساعة");
 
 // ============================================================
-// 👥 نظام الزوار الوهميين
+// 👥 نظام الزوار الوهميين فقط (متوافق مع الملف الحالي)
 // ============================================================
 
 const VISITORS_FILE = path.join(__dirname, "data", "visitors.json");
 
+// ✅ دالة للحصول على بيانات الزوار
 function getVisitors() {
   try {
     if (fs.existsSync(VISITORS_FILE)) {
       const data = JSON.parse(fs.readFileSync(VISITORS_FILE, 'utf8'));
       
+      // ✅ التحقق من اليوم - إعادة تعيين إذا كان يوم جديد
       const now = new Date();
-      const resetDate = new Date(data.dailyReset);
-      if (resetDate.getDate() !== now.getDate() || 
-          resetDate.getMonth() !== now.getMonth() || 
-          resetDate.getFullYear() !== now.getFullYear()) {
+      const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+      const savedDate = data.date || todayStr;
+      
+      if (savedDate !== todayStr) {
+        // ✅ يوم جديد: إضافة زوار الأمس إلى الإجمالي وإعادة تعيين اليوم
+        const yesterdayToday = data.today || 0;
+        data.total = (data.total || 0) + yesterdayToday;
         data.today = 0;
+        data.date = todayStr;
         data.dailyReset = now.toISOString();
+        data.lastUpdate = now.toISOString();
         saveVisitors(data);
+        console.log(`📅 يوم جديد - تم إضافة ${yesterdayToday} إلى الإجمالي (الإجمالي: ${data.total})`);
       }
       
       return data;
@@ -346,16 +352,19 @@ function getVisitors() {
     console.error('خطأ في قراءة بيانات الزوار:', error.message);
   }
   
+  // ✅ بيانات افتراضية عند عدم وجود ملف
   const defaultData = {
     total: 0,
     today: 0,
-    lastUpdate: new Date().toISOString(),
-    dailyReset: new Date().toISOString()
+    date: new Date().toISOString().split('T')[0],
+    dailyReset: new Date().toISOString(),
+    lastUpdate: new Date().toISOString()
   };
   saveVisitors(defaultData);
   return defaultData;
 }
 
+// ✅ دالة لحفظ بيانات الزوار
 function saveVisitors(data) {
   try {
     const dataDir = path.join(__dirname, 'data');
@@ -368,145 +377,53 @@ function saveVisitors(data) {
   }
 }
 
+// ✅ دالة لتحديث الزوار (تضيف 9 أو 14 أو 17)
 function updateVisitors() {
   const data = getVisitors();
   const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
   
-  const resetDate = new Date(data.dailyReset);
-  if (resetDate.getDate() !== now.getDate() || 
-      resetDate.getMonth() !== now.getMonth() || 
-      resetDate.getFullYear() !== now.getFullYear()) {
+  // ✅ التحقق من اليوم
+  if (data.date !== todayStr) {
+    const yesterdayToday = data.today || 0;
+    data.total = (data.total || 0) + yesterdayToday;
     data.today = 0;
+    data.date = todayStr;
     data.dailyReset = now.toISOString();
   }
   
-  const increase = Math.floor(Math.random() * 10) + 5;
-  data.total += increase;
-  data.today += increase;
+  // ✅ اختيار رقم عشوائي: 9 أو 14 أو 17
+  const numbers = [9, 14, 17];
+  const increase = numbers[Math.floor(Math.random() * numbers.length)];
+  
+  data.today = (data.today || 0) + increase;
   data.lastUpdate = now.toISOString();
   
   saveVisitors(data);
-  console.log(`👥 تم تحديث الزوار الوهميين: +${increase} (الإجمالي: ${data.total}, اليوم: ${data.today})`);
+  console.log(`👥 تم تحديث الزوار الوهميين: +${increase} (اليوم: ${data.today}, الإجمالي: ${data.total})`);
 }
 
+// ✅ تحديث الزوار كل ساعة
 setInterval(updateVisitors, 60 * 60 * 1000);
+
+// ✅ تحديث أولي بعد 5 ثوانٍ من بدء التشغيل
 setTimeout(updateVisitors, 5000);
 
+// ✅ API لعرض بيانات الزوار
 app.get('/api/visitors', (req, res) => {
   const data = getVisitors();
   res.json({
     success: true,
-    total: data.total,
-    today: data.today,
-    lastUpdate: data.lastUpdate
+    total: data.total || 0,
+    today: data.today || 0,
+    lastUpdate: data.lastUpdate,
+    dailyReset: data.dailyReset,
+    date: data.date
   });
 });
 
-console.log('👥 نظام الزوار الوهميين يعمل (تحديث كل ساعة)');
-
-// ============================================================
-// 👥 الزوار الحقيقيين (تم إصلاح المشكلة)
-// ============================================================
-
-const REAL_VISITORS_FILE = path.join(__dirname, "data", "real-visitors.json");
-
-// دالة لتسجيل زائر حقيقي
-function logRealVisitor(req) {
-  try {
-    let data = { total: 0, today: 0, online: 0, recent: [], lastReset: new Date().toISOString() };
-    
-    if (fs.existsSync(REAL_VISITORS_FILE)) {
-      data = JSON.parse(fs.readFileSync(REAL_VISITORS_FILE, 'utf8'));
-    }
-    
-    // التحقق من إعادة التعيين اليومي
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
-    if (data.lastReset !== today) {
-      data.today = 0;
-      data.lastReset = today;
-    }
-    
-    // زيادة العداد
-    data.total += 1;
-    data.today += 1;
-    data.online = Math.min(data.online + 1, 50);
-    
-    // إضافة الزيارة إلى السجل
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'غير معروف';
-    const userAgent = req.headers['user-agent'] || 'غير معروف';
-    const browser = userAgent.split(' ').slice(0, 2).join(' ') || 'متصفح غير معروف';
-    
-    data.recent.unshift({
-      ip: ip,
-      browser: browser,
-      time: new Date().toISOString()
-    });
-    
-    // الاحتفاظ بآخر 50 زيارة فقط
-    if (data.recent.length > 50) {
-      data.recent = data.recent.slice(0, 50);
-    }
-    
-    fs.writeFileSync(REAL_VISITORS_FILE, JSON.stringify(data, null, 2));
-    console.log(`👤 تم تسجيل زائر حقيقي: ${ip} (${browser})`);
-  } catch (error) {
-    console.error('❌ خطأ في تسجيل الزائر:', error.message);
-  }
-}
-
-// ✅ تسجيل الزوار الحقيقيين (Middleware) - النسخة المحسنة مع إصلاح المشكلة
-app.use((req, res, next) => {
-  // تسجيل الزوار فقط عند فتح الصفحة الرئيسية أو أي صفحة عادية (ليست API أو Admin)
-  if (!req.path.startsWith('/api/') && 
-      !req.path.startsWith('/admin') && 
-      !req.path.includes('.') && 
-      req.path !== '/favicon.ico') {  // ✅ تم إزالة الشرط الذي كان يمنع تسجيل الصفحة الرئيسية
-    logRealVisitor(req);
-  }
-  next();
-});
-
-// ✅ تقليل عدد المتصلين بعد فترة (محاكاة خروج الزوار)
-setInterval(() => {
-  try {
-    if (fs.existsSync(REAL_VISITORS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(REAL_VISITORS_FILE, 'utf8'));
-      if (data.online > 0) {
-        data.online = Math.max(0, data.online - Math.floor(Math.random() * 3));
-        fs.writeFileSync(REAL_VISITORS_FILE, JSON.stringify(data, null, 2));
-      }
-    }
-  } catch (error) {}
-}, 60000); // كل دقيقة
-
-// API: الحصول على إحصائيات الزوار الحقيقيين
-app.get('/api/real-visitors', (req, res) => {
-  try {
-    if (fs.existsSync(REAL_VISITORS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(REAL_VISITORS_FILE, 'utf8'));
-      res.json({
-        success: true,
-        total: data.total || 0,
-        today: data.today || 0,
-        online: data.online || 0,
-        recent: data.recent || []
-      });
-    } else {
-      res.json({
-        success: true,
-        total: 0,
-        today: 0,
-        online: 0,
-        recent: []
-      });
-    }
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-console.log('👥 نظام الزوار الحقيقيين يعمل (تم إصلاح مشكلة تسجيل الزوار)');
+console.log('👥 نظام الزوار الوهميين يعمل (تحديث كل ساعة: +9/14/17)');
+console.log('📅 سيتم إضافة زوار اليوم إلى الإجمالي عند منتصف الليل');
 
 // ============================================================
 // 🚀 تشغيل الخادم
