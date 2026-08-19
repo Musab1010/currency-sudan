@@ -1,4 +1,4 @@
-// server.js - نظام الزوار الوهميين فقط (متوافق مع الملف الحالي)
+// server.js - نظام الزوار الوهميين (تراكمي) مع بداية 1000
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
@@ -318,7 +318,7 @@ setInterval(() => {
 console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساعة");
 
 // ============================================================
-// 👥 نظام الزوار الوهميين فقط (متوافق مع الملف الحالي)
+// 👥 نظام الزوار الوهميين (تراكمي) - بداية الإجمالي 1000
 // ============================================================
 
 const VISITORS_FILE = path.join(__dirname, "data", "visitors.json");
@@ -352,15 +352,16 @@ function getVisitors() {
     console.error('خطأ في قراءة بيانات الزوار:', error.message);
   }
   
-  // ✅ بيانات افتراضية عند عدم وجود ملف
+  // ✅ بيانات افتراضية عند عدم وجود ملف - بداية الإجمالي 1000
   const defaultData = {
-    total: 0,
+    total: 1000,
     today: 0,
     date: new Date().toISOString().split('T')[0],
     dailyReset: new Date().toISOString(),
     lastUpdate: new Date().toISOString()
   };
   saveVisitors(defaultData);
+  console.log('📊 تم إنشاء ملف زوار جديد - الإجمالي: 1000');
   return defaultData;
 }
 
@@ -377,7 +378,7 @@ function saveVisitors(data) {
   }
 }
 
-// ✅ دالة لتحديث الزوار (تضيف 9 أو 14 أو 17)
+// ✅ دالة لتحديث الزوار (تضيف 9 أو 14 أو 17 إلى زوار اليوم فقط)
 function updateVisitors() {
   const data = getVisitors();
   const now = new Date();
@@ -396,11 +397,12 @@ function updateVisitors() {
   const numbers = [9, 14, 17];
   const increase = numbers[Math.floor(Math.random() * numbers.length)];
   
+  // ✅ إضافة الرقم إلى زوار اليوم فقط (تراكمي)
   data.today = (data.today || 0) + increase;
   data.lastUpdate = now.toISOString();
   
   saveVisitors(data);
-  console.log(`👥 تم تحديث الزوار الوهميين: +${increase} (اليوم: ${data.today}, الإجمالي: ${data.total})`);
+  console.log(`👥 تم تحديث الزوار: +${increase} (اليوم: ${data.today}, الإجمالي: ${data.total})`);
 }
 
 // ✅ تحديث الزوار كل ساعة
@@ -423,6 +425,7 @@ app.get('/api/visitors', (req, res) => {
 });
 
 console.log('👥 نظام الزوار الوهميين يعمل (تحديث كل ساعة: +9/14/17)');
+console.log('📊 بداية الإجمالي: 1000 زائر');
 console.log('📅 سيتم إضافة زوار اليوم إلى الإجمالي عند منتصف الليل');
 
 // ============================================================
