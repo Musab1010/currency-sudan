@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+const { exec } = require("child_process"); // ✅ لإدارة العمليات
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -85,6 +86,42 @@ function loadRatesData() {
     return getDefaultRates();
   }
 }
+
+// ============================================================
+// 🚀 تشغيل سكربت السحب عند بدء الخادم
+// ============================================================
+
+function runScraper() {
+  console.log("🔄 [بدء] جلب الأسعار من alsoug.com...");
+  exec("node scrape-alsoug.js", (error, stdout, stderr) => {
+    if (error) {
+      console.error("❌ فشل تشغيل سكربت السحب:", error.message);
+      return;
+    }
+    if (stdout) console.log(stdout);
+    if (stderr) console.error(stderr);
+    console.log("✅ تم تحديث البيانات بنجاح!");
+  });
+}
+
+// ✅ تشغيل السكربت فور بدء الخادم (بعد 5 ثوانٍ)
+setTimeout(runScraper, 5000);
+
+// ✅ تحديث تلقائي كل ساعة
+setInterval(() => {
+  console.log("🔄 [تلقائي] جلب الأسعار من السوق السودان...");
+  exec("node scrape-alsoug.js", (error, stdout, stderr) => {
+    if (error) {
+      console.error("❌ خطأ في السكربت:", error.message);
+      return;
+    }
+    if (stdout) console.log(stdout);
+    if (stderr) console.error(stderr);
+    console.log("✅ تم تحديث الأسعار تلقائياً");
+  });
+}, 60 * 60 * 1000); // كل ساعة
+
+console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساعة");
 
 // ============================================================
 // 📊 APIs
