@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
-const { exec } = require("child_process"); // ✅ لإدارة العمليات
+const { exec } = require("child_process");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,42 +25,56 @@ if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// ✅ البيانات الافتراضية للعملات
+// ✅ البيانات الافتراضية للعملات (محدثة)
 function getDefaultRates() {
   return {
     official: {
       currencies: {
-        USD: { rate: 3576.63, flag: "🇺🇸", name: "دولار أمريكي" },
-        EUR: { rate: 4067.35, flag: "🇪🇺", name: "يورو" },
-        SAR: { rate: 961.46, flag: "🇸🇦", name: "ريال سعودي" },
-        AED: { rate: 979.9, flag: "🇦🇪", name: "درهم إماراتي" },
-        EGP: { rate: 71.22, flag: "🇪🇬", name: "جنيه مصري" },
-        QAR: { rate: 983.95, flag: "🇶🇦", name: "ريال قطري" }
+        USD: { rate: 3611.89, flag: "🇺🇸", name: "دولار أمريكي" },
+        EUR: { rate: 4109.97, flag: "🇪🇺", name: "يورو" },
+        SAR: { rate: 970.94, flag: "🇸🇦", name: "ريال سعودي" },
+        AED: { rate: 989.56, flag: "🇦🇪", name: "درهم إماراتي" },
+        EGP: { rate: 70.94, flag: "🇪🇬", name: "جنيه مصري" },
+        QAR: { rate: 997.08, flag: "🇶🇦", name: "ريال قطري" }
       },
       lastUpdated: new Date().toISOString(),
       updatedBy: "system",
-      usd_sdg: 3576.63
+      source: "default",
+      usd_sdg: 3611.89
     },
     parallel: {
       currencies: {
-        USD: { rate: 6000, flag: "🇺🇸", name: "دولار أمريكي" },
-        EUR: { rate: 6954, flag: "🇪🇺", name: "يورو" },
-        SAR: { rate: 1580, flag: "🇸🇦", name: "ريال سعودي" },
-        AED: { rate: 1635, flag: "🇦🇪", name: "درهم إماراتي" },
-        EGP: { rate: 118.6, flag: "🇪🇬", name: "جنيه مصري" },
-        QAR: { rate: 1635, flag: "🇶🇦", name: "ريال قطري" }
+        USD: { rate: 7155, flag: "🇺🇸", name: "دولار أمريكي" },
+        EUR: { rate: 8270, flag: "🇪🇺", name: "يورو" },
+        SAR: { rate: 1820, flag: "🇸🇦", name: "ريال سعودي" },
+        AED: { rate: 1950, flag: "🇦🇪", name: "درهم إماراتي" },
+        EGP: { rate: 136, flag: "🇪🇬", name: "جنيه مصري" },
+        QAR: { rate: 1950, flag: "🇶🇦", name: "ريال قطري" }
       },
       lastUpdated: new Date().toISOString(),
       updatedBy: "system",
-      usd_sdg: 6000
+      source: "default",
+      usd_sdg: 7155
     },
     history: []
   };
 }
 
-// ✅ دالة لقراءة البيانات
+// ✅ دالة لقراءة البيانات (مع دعم Render.com)
 function loadRatesData() {
   try {
+    // ✅ 1. محاولة قراءة من مسار Render.com أولاً
+    const renderPath = '/tmp/rates.json';
+    if (fs.existsSync(renderPath)) {
+      const rawData = fs.readFileSync(renderPath, "utf8");
+      const data = JSON.parse(rawData);
+      if (data.official?.currencies && Object.keys(data.official.currencies).length > 0) {
+        console.log("📊 تم تحميل البيانات من /tmp/rates.json (Render) بنجاح");
+        return data;
+      }
+    }
+    
+    // ✅ 2. محاولة قراءة من المسار المحلي (data/rates.json)
     if (fs.existsSync(RATES_FILE)) {
       const rawData = fs.readFileSync(RATES_FILE, "utf8");
       const data = JSON.parse(rawData);
@@ -70,6 +84,7 @@ function loadRatesData() {
       }
     }
     
+    // ✅ 3. محاولة قراءة من data.json
     if (fs.existsSync(DATA_FILE)) {
       const rawData = fs.readFileSync(DATA_FILE, "utf8");
       const data = JSON.parse(rawData);
@@ -93,7 +108,9 @@ function loadRatesData() {
 
 function runScraper() {
   console.log("🔄 [بدء] جلب الأسعار من alsoug.com...");
-  exec("node scrape-alsoug.js", (error, stdout, stderr) => {
+  const scriptPath = path.join(__dirname, "scrape-alsoug.js");
+  
+  exec(`node "${scriptPath}"`, (error, stdout, stderr) => {
     if (error) {
       console.error("❌ فشل تشغيل سكربت السحب:", error.message);
       return;
@@ -110,7 +127,8 @@ setTimeout(runScraper, 5000);
 // ✅ تحديث تلقائي كل ساعة
 setInterval(() => {
   console.log("🔄 [تلقائي] جلب الأسعار من السوق السودان...");
-  exec("node scrape-alsoug.js", (error, stdout, stderr) => {
+  const scriptPath = path.join(__dirname, "scrape-alsoug.js");
+  exec(`node "${scriptPath}"`, (error, stdout, stderr) => {
     if (error) {
       console.error("❌ خطأ في السكربت:", error.message);
       return;
@@ -119,7 +137,7 @@ setInterval(() => {
     if (stderr) console.error(stderr);
     console.log("✅ تم تحديث الأسعار تلقائياً");
   });
-}, 60 * 60 * 1000); // كل ساعة
+}, 60 * 60 * 1000);
 
 console.log("⏰ سيتم تحديث الأسعار تلقائياً كل ساعة");
 
