@@ -1,0 +1,98 @@
+{
+  "lastUpdated": "2026-07-06T09:00:00.869Z",
+  "total": 8,
+  "available": 8,
+  "unavailable": 0,
+  "errors": 0,
+  "upPercentage": 100,
+  "apps": [
+    {
+      "id": "bank-of-khartoum",
+      "name": "بنك الخرطوم",
+      "packageName": "com.bankofkhartoum.mobile",
+      "icon": "🏦",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "4.2",
+      "downloads": "100K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "fibank",
+      "name": "في بنك",
+      "packageName": "com.fibank.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "4.0",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "obn",
+      "name": "بنك أم درمان الوطني",
+      "packageName": "com.obn.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "3.8",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "faisal",
+      "name": "بنك فيصل الإسلامي",
+      "packageName": "com.faisalbank.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "4.1",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "sib",
+      "name": "البنك السوداني الإسلامي",
+      "packageName": "com.sib.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "4.0",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "nilein",
+      "name": "بنك النيلين",
+      "packageName": "com.nileinbank.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "3.9",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "adib",
+      "name": "بنك أبو ظبي الإسلامي",
+      "packageName": "com.adib.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "4.0",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    },
+    {
+      "id": "aljazeera",
+      "name": "بنك الجزيرة السوداني",
+      "packageName": "com.aljazeera.sudan",
+      "icon": "🏛️",
+      "status": "available",
+      "message": "✅ متاح",
+      "rating": "3.9",
+      "downloads": "50K+",
+      "lastChecked": "2026-07-06T09:00:00.869Z"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "lastUpdated": "2026-07-06T08:38:02.457Z",
+  "total": 10,
+  "up": 1,
+  "down": 9,
+  "upPercentage": 10,
+  "banks": [
+    {
+      "id": "cbos",
+      "name": "بنك السودان المركزي",
+      "url": "https://cbos.gov.sd",
+      "icon": "🏦",
+      "status": "down",
+      "responseTime": 1505,
+      "lastChecked": "2026-07-06T08:37:14.251Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "bank-of-khartoum",
+      "name": "بنك الخرطوم",
+      "url": "https://bankofkhartoum.com",
+      "icon": "🏛️",
+      "status": "up",
+      "statusCode": 200,
+      "responseTime": 11052,
+      "lastChecked": "2026-07-06T08:37:25.808Z",
+      "message": "✅ يعمل"
+    },
+    {
+      "id": "obn",
+      "name": "بنك أم درمان الوطني",
+      "url": "https://www.obn-sd.com",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 3605,
+      "lastChecked": "2026-07-06T08:37:29.916Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "fibank",
+      "name": "في بنك",
+      "url": "https://fibank.sd",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 333,
+      "lastChecked": "2026-07-06T08:37:30.757Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "abn",
+      "name": "بنك أبو ظبي الإسلامي",
+      "url": "https://www.abn-sd.com",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 1123,
+      "lastChecked": "2026-07-06T08:37:32.395Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "qnb",
+      "name": "بنك قطر الوطني - السودان",
+      "url": "https://www.qnb.com/sudan",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 15013,
+      "lastChecked": "2026-07-06T08:37:47.919Z",
+      "message": "⏰ انتهت المهلة"
+    },
+    {
+      "id": "faisal",
+      "name": "بنك فيصل الإسلامي",
+      "url": "https://www.faisalbank-sd.com",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 297,
+      "lastChecked": "2026-07-06T08:37:48.722Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "sib",
+      "name": "البنك السوداني الإسلامي",
+      "url": "https://www.sib.sd",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 7893,
+      "lastChecked": "2026-07-06T08:37:57.130Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "aljazeera",
+      "name": "بنك الجزيرة السوداني",
+      "url": "https://www.aljazeerabank.sd",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 1701,
+      "lastChecked": "2026-07-06T08:37:59.332Z",
+      "message": "❌ لا يمكن الاتصال"
+    },
+    {
+      "id": "nilein",
+      "name": "بنك النيلين",
+      "url": "https://www.nileinbank.sd",
+      "icon": "🏛️",
+      "status": "down",
+      "responseTime": 2104,
+      "lastChecked": "2026-07-06T08:38:01.945Z",
+      "message": "❌ لا يمكن الاتصال"
+    }
+  ]
+}
