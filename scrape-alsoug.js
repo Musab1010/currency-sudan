@@ -244,6 +244,12 @@ async function updateSystemWithRates(rates) {
       timestamp: new Date().toISOString()
     });
 
+    // ✅ تقليص السجل إلى 20 تحديث فقط (تمت الإضافة)
+    if (newData.history.length > 20) {
+      newData.history = newData.history.slice(0, 20);
+      console.log(`📊 تم تقليص السجل إلى 20 تحديث`);
+    }
+
     // ✅ حفظ البيانات
     fs.writeFileSync(dataPath, JSON.stringify(newData, null, 2));
     console.log('✅ تم تحديث ملف البيانات بنجاح');
