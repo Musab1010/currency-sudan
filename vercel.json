@@ -7,10 +7,7 @@
     }
   ],
   "routes": [
-    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
-    { "src": "/robots.txt", "dest": "/robots.txt" },
-    { "src": "/google.*\\.html", "dest": "/$&" },
-    { "src": "/ads.txt", "dest": "/ads.txt" },
+    { "handle": "filesystem" },
     {
       "src": "/(.*)",
       "dest": "server.js"
