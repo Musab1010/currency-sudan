@@ -261,6 +261,27 @@ console.log('📊 بداية الإجمالي: 1000 زائر');
 console.log('📅 سيتم إضافة زوار اليوم إلى الإجمالي عند منتصف الليل');
 
 // ============================================================
+// 📄 مسارات الملفات الثابتة لـ SEO
+// ============================================================
+
+app.get("/sitemap.xml", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "sitemap.xml"));
+});
+
+app.get("/robots.txt", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "robots.txt"));
+});
+
+app.get("/ads.txt", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "ads.txt"));
+});
+
+app.get("/google*.html", (req, res) => {
+  const fileName = req.path.substring(1);
+  res.sendFile(path.join(__dirname, "public", fileName));
+});
+
+// ============================================================
 // 🏠 الصفحات
 // ============================================================
 
