@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://currency-sudan-fq69.onrender.com/sitemap.xml
+Sitemap: https://currencysudan.vercel.app/sitemap.xml
