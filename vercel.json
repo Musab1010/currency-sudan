@@ -1,16 +1,12 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
+      "source": "/api/rates",
+      "destination": "https://currency-sudan-fq69.onrender.com/api/rates"
+    },
     {
-      "src": "/(.*)",
-      "dest": "server.js"
+      "source": "/api/visitors",
+      "destination": "https://currency-sudan-fq69.onrender.com/api/visitors"
     }
   ]
 }
